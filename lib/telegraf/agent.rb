@@ -5,11 +5,23 @@ module Telegraf
     DEFAULT_URI = 'tcp://localhost:8094'
     DEFAULT_URI = 'unix:///tmp/telegraf.sock'
 
-    def initialize(uri = DEFAULT_CONNECTION)
+    attr_reader :uri
+    attr_reader :logger
+
+    def initialize(uri = DEFAULT_CONNECTION, logger: nil)
       @uri = URI.parse(uri)
+      @logger = logger
     end
 
     def write(data)
+      write!(data)
+    rescue => e
+      logger&.error('telegraf') do
+        e.to_s + e.backtrace.join("\n")
+      end
+    end
+
+    def write!(data)
       socket = connect @uri
       socket.write dump data
     ensure
