@@ -3,7 +3,7 @@
 module Telegraf
   module VERSION
     MAJOR = 0
-    MINOR = 2
+    MINOR = 3
     PATCH = 0
     STAGE = nil
     STRING = [MAJOR, MINOR, PATCH, STAGE].reject(&:nil?).join('.').freeze
