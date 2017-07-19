@@ -13,15 +13,19 @@ module Telegraf
       @logger = logger
     end
 
-    def write(data)
-      write!(data)
+    def write(*args)
+      write!(*args)
     rescue => e
       logger&.error('telegraf') do
         e.to_s + e.backtrace.join("\n")
       end
     end
 
-    def write!(data)
+    def write!(data, series: nil, tags: nil, values: nil)
+      if values
+        data = [{series: series || data.to_s, tags: tags, values: values}]
+      end
+
       socket = connect @uri
       socket.write dump data
     ensure
@@ -31,7 +35,7 @@ module Telegraf
     private
 
     def dump(data)
-      Array(data).map do |point|
+      data.each.map do |point|
         ::InfluxDB::PointValue.new(point).dump
       end.join("\n")
     end

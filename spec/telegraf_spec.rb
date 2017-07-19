@@ -7,7 +7,7 @@ RSpec.describe Telegraf do
     expect(Telegraf::VERSION).not_to be nil
   end
 
-  it 'UNIX socket' do
+  it 'UNIX socket (I)' do
     Dir.mktmpdir do |dir|
       server = UNIXServer.new "#{dir}/telegraf.sock"
       agent  = Telegraf::Agent.new "unix:#{dir}/telegraf.sock"
@@ -20,6 +20,21 @@ RSpec.describe Telegraf do
       recv = server.accept.read_nonblock(4096)
 
       expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
+
+      server.close
+    end
+  end
+
+  it 'UNIX socket (II)' do
+    Dir.mktmpdir do |dir|
+      server = UNIXServer.new "#{dir}/telegraf.sock"
+      agent  = Telegraf::Agent.new "unix:#{dir}/telegraf.sock"
+
+      agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
+
+      recv = server.accept.read_nonblock(4096)
+
+      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1"
 
       server.close
     end
