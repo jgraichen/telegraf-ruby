@@ -2,7 +2,6 @@
 
 module Telegraf
   class Agent
-    DEFAULT_URI = 'tcp://localhost:8094'
     DEFAULT_URI = 'unix:///tmp/telegraf.sock'
 
     attr_reader :uri
