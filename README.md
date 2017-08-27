@@ -22,14 +22,13 @@ Configure telegraf socket listener e.g.:
 
 ```
 [[inputs.socket_listener]]
-  service_address = "unix:/run/telegraf/telegraf.sock"
-  # service_address = "tcp://localhost:8094"
+  service_address = "udp://localhost:8094"
 
 ```
 
 ```ruby
-telegraf = Telegraf::Agent.new 'unix:/run/telegraf/telegraf.sock'
-# telegraf = Telegraf::Agent.new 'tcp://localhost:8094'
+telegraf = Telegraf::Agent.new 'udp://localhost:8094'
+telegraf = Telegraf::Agent.new # default: 'udp://localhost:8094'
 
 telegraf.write('demo',
     tags: {tag_a: 'A', tag_b: 'B'},
