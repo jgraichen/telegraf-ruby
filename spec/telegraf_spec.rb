@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+require 'tmpdir'
+
 RSpec.describe Telegraf do
   it 'has a version number' do
     expect(Telegraf::VERSION).not_to be nil
