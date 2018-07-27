@@ -2,6 +2,8 @@
 
 Minimal gem to send metrics to a local telegraf agent.
 
+This gem only uses the line protocol from the `influxdb` gem and does not depend on a specific version. This may break in the future but does not restrict you in using a your preferred `influxdb` version.
+
 ## Installation
 
 ```ruby
