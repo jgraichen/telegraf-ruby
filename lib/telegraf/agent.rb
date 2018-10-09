@@ -2,7 +2,7 @@
 
 module Telegraf
   class Agent
-    DEFAULT_URI = 'udp://localhost:8094'
+    DEFAULT_CONNECTION = 'udp://localhost:8094'
 
     attr_reader :uri
     attr_reader :logger
