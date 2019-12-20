@@ -100,4 +100,24 @@ RSpec.describe Telegraf do
       server.close
     end
   end
+
+  it 'Default server' do
+    Dir.mktmpdir do |_dir|
+      server = UDPSocket.new
+      server.bind 'localhost', 8094
+
+      agent = Telegraf::Agent.new
+
+      agent.write([
+                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+                  ])
+
+      recv = server.read_nonblock(4096)
+
+      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
+
+      server.close
+    end
+  end
 end
