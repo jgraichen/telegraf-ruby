@@ -1,22 +1,7 @@
 sudo: false
-dist: xenial
+dist: bionic
 language: ruby
 rvm:
-- 2.6.1
-- 2.5.3
-- 2.4.5
-- 2.3.8
-jobs:
-  include:
-  - stage: Release
-    rvm: 2.6.1
-    script: skip
-    install: skip
-    deploy:
-      provider: rubygems
-      api_key:
-        secure: CcUafYaGbfw8OqiCGEr2vqcGeb16FtpUsL8y6jTz4rWKJbWpt5HZL9GBw5vr+bhS8b4vOySVfWhR9GkHB0Z8q36GDh5Y1Rmh6OZKdN3PQs/ACH9pP0BL9jxrNcZWdsEttGaUjrZzgCNwZKs21BUiTpWUSuUMhQuSU03GmPqpTaX8NZyBrIIX8UpqHjtJ1+y3BfJkuUPc07JDPLfQVvz7/Np/5UdMJ7DEec7lipGXXA/R8VbOL6f+NP6kf6EHunEH0BWbWWmonIybdvYX0T9lSa6ajr+SQx1oD29HUdQUwspDAlsUKkNm4nfpp6Wwznt11SYMJFLKOH6RycNtENTakXaG3C7RH5XFkHACSs/c0LQdCmdkJCv27PC0rYUrnyfYv+5p6kCh0GJoM/e5eTlyborhdOF97GlVcHe/vmTfSjOW2UaXRwpaM9b2s7SMkURiGVoYnXlq0GM+98Tp1qR7c/AFjzrpfSXxyFXQRiycILaRt2bdA9ySbkfxD3gz0hkjrjuclSa+Oxn/ufsDt56FklDftZpQUI4+ydhhxh6VdG3Hr8mQezuc+3u+z6HYPjoVbccHkQb3YjuIj2wUF6tICaO9voYIRsxtMaG1R0pDBMTjfmWzbJF6nhtZrigwC31e0fqen3LmXuWK8I6pk/TgCEdYXn8aaDqEC+WsRWGZkMY=
-      gem: telegraf
-      on:
-        tags: true
-        repo: jgraichen/telegraf-ruby
+  - 2.7.0
+  - 2.6.5
+  - 2.5.7

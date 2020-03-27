@@ -21,10 +21,12 @@ RSpec.describe Telegraf do
         ]
       )
 
-      recv = server.accept.read_nonblock(4096)
+      recv = Timeout.timeout(0.1) do
+        server.accept.read_nonblock(4096)
+      end
 
       expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-
+    ensure
       server.close
     end
   end
@@ -36,10 +38,12 @@ RSpec.describe Telegraf do
 
       agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
 
-      recv = server.accept.read_nonblock(4096)
+      recv = Timeout.timeout(0.1) do
+        server.accept.read_nonblock(4096)
+      end
 
       expect(recv).to eq 'demo,a=1,b=2 a=1i,b=2.1'
-
+    ensure
       server.close
     end
   end
@@ -52,74 +56,78 @@ RSpec.describe Telegraf do
 
       agent = Telegraf::Agent.new "unixgram:#{dir}/telegraf.sock"
 
-      agent.write([
-                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-                  ])
+      agent.write(
+        [
+          {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+          {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+        ]
+      )
 
-      recv = server.read_nonblock(4096)
+      recv = Timeout.timeout(0.1) do
+        server.read_nonblock(4096)
+      end
 
       expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-
+    ensure
       server.close
     end
   end
 
   it 'TCP socket' do
-    Dir.mktmpdir do |_dir|
-      server = TCPServer.new 'localhost', 8094
-      agent  = Telegraf::Agent.new 'tcp://localhost:8094'
+    server = TCPServer.new 'localhost', 8094
+    agent  = Telegraf::Agent.new 'tcp://localhost:8094'
 
-      agent.write([
-                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-                  ])
+    agent.write(
+      [
+        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+      ]
+    )
 
-      recv = server.accept.read_nonblock(4096)
+    recv = server.accept.read_nonblock(4096)
 
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
+    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
 
-      server.close
-    end
+    server.close
   end
 
   it 'UDP socket' do
-    Dir.mktmpdir do |_dir|
-      server = UDPSocket.new
-      server.bind 'localhost', 8094
+    server = UDPSocket.new
+    server.bind 'localhost', 8094
 
-      agent = Telegraf::Agent.new 'udp://localhost:8094'
+    agent = Telegraf::Agent.new 'udp://localhost:8094'
 
-      agent.write([
-                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-                  ])
+    agent.write(
+      [
+        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+      ]
+    )
 
-      recv = server.read_nonblock(4096)
+    recv = server.read_nonblock(4096)
 
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
+    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
 
-      server.close
-    end
+    server.close
   end
 
-  it 'Default server' do
-    Dir.mktmpdir do |_dir|
-      server = UDPSocket.new
-      server.bind 'localhost', 8094
+  it 'default server' do
+    server = UDPSocket.new
+    server.bind 'localhost', 8094
 
-      agent = Telegraf::Agent.new
+    agent = Telegraf::Agent.new
 
-      agent.write([
-                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-                  ])
+    agent.write(
+      [
+        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+      ]
+    )
 
-      recv = server.read_nonblock(4096)
+    recv = server.read_nonblock(4096)
 
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
+    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
 
-      server.close
-    end
+    server.close
   end
 end
