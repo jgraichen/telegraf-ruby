@@ -14,10 +14,12 @@ RSpec.describe Telegraf do
       server = UNIXServer.new "#{dir}/telegraf.sock"
       agent  = Telegraf::Agent.new "unix:#{dir}/telegraf.sock"
 
-      agent.write([
-                    {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-                    {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-                  ])
+      agent.write(
+        [
+          {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
+          {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
+        ]
+      )
 
       recv = server.accept.read_nonblock(4096)
 
@@ -36,7 +38,7 @@ RSpec.describe Telegraf do
 
       recv = server.accept.read_nonblock(4096)
 
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1"
+      expect(recv).to eq 'demo,a=1,b=2 a=1i,b=2.1'
 
       server.close
     end

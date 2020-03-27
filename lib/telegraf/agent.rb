@@ -14,7 +14,7 @@ module Telegraf
 
     def write(*args, **kwargs)
       write!(*args, **kwargs)
-    rescue => e
+    rescue StandardError => e
       logger&.error('telegraf') do
         e.to_s + e.backtrace.join("\n")
       end
