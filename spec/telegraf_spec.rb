@@ -9,11 +9,11 @@ RSpec.describe Telegraf do
     expect(Telegraf::VERSION).not_to be nil
   end
 
-  it 'UNIX socket (I)' do
-    Dir.mktmpdir do |dir|
-      server = UNIXServer.new "#{dir}/telegraf.sock"
-      agent  = Telegraf::Agent.new "unix:#{dir}/telegraf.sock"
+  context 'with UNIX socket' do
+    let(:agent) { ::Telegraf::Agent.new "unix:#{tmpdir}/sock" }
+    let(:socket) { ::UNIXServer.new "#{tmpdir}/sock" }
 
+    it 'writes multiple points' do
       agent.write(
         [
           {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
@@ -21,113 +21,56 @@ RSpec.describe Telegraf do
         ]
       )
 
-      recv = Timeout.timeout(0.1) do
-        server.accept.read_nonblock(4096)
-      end
-
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-    ensure
-      server.close
+      expect(socket_read).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
     end
-  end
 
-  it 'UNIX socket (II)' do
-    Dir.mktmpdir do |dir|
-      server = UNIXServer.new "#{dir}/telegraf.sock"
-      agent  = Telegraf::Agent.new "unix:#{dir}/telegraf.sock"
-
+    it 'writes single points' do
       agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
-
-      recv = Timeout.timeout(0.1) do
-        server.accept.read_nonblock(4096)
-      end
-
-      expect(recv).to eq 'demo,a=1,b=2 a=1i,b=2.1'
-    ensure
-      server.close
+      expect(socket_read).to eq 'demo,a=1,b=2 a=1i,b=2.1'
     end
   end
 
-  it 'UNIXGRAM socket' do
-    Dir.mktmpdir do |dir|
-      server = Socket.new(:UNIX, :DGRAM).tap do |socket|
-        socket.bind Socket.pack_sockaddr_un "#{dir}/telegraf.sock"
+  context 'with UNIXGRAM socket' do
+    let(:agent) { ::Telegraf::Agent.new "unixgram:#{tmpdir}/sock" }
+    let(:socket) do
+      Socket.new(:UNIX, :DGRAM).tap do |socket|
+        socket.bind Socket.pack_sockaddr_un "#{tmpdir}/sock"
       end
+    end
 
-      agent = Telegraf::Agent.new "unixgram:#{dir}/telegraf.sock"
-
-      agent.write(
-        [
-          {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-          {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-        ]
-      )
-
-      recv = Timeout.timeout(0.1) do
-        server.read_nonblock(4096)
-      end
-
-      expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-    ensure
-      server.close
+    it 'write points' do
+      agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
+      expect(socket_read).to eq 'demo,a=1,b=2 a=1i,b=2.1'
     end
   end
 
-  it 'TCP socket' do
-    server = TCPServer.new 'localhost', 8094
-    agent  = Telegraf::Agent.new 'tcp://localhost:8094'
+  context 'with TCP socket' do
+    let(:agent) { ::Telegraf::Agent.new 'tcp://localhost:8094' }
+    let(:socket) { TCPServer.new 'localhost', 8094 }
 
-    agent.write(
-      [
-        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-      ]
-    )
-
-    recv = server.accept.read_nonblock(4096)
-
-    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-
-    server.close
+    it 'write points' do
+      agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
+      expect(socket_read).to eq 'demo,a=1,b=2 a=1i,b=2.1'
+    end
   end
 
-  it 'UDP socket' do
-    server = UDPSocket.new
-    server.bind 'localhost', 8094
+  context 'with UDP socket' do
+    let(:agent) { ::Telegraf::Agent.new 'udp://localhost:8094' }
+    let(:socket) { UDPSocket.new.tap {|s| s.bind 'localhost', 8094 } }
 
-    agent = Telegraf::Agent.new 'udp://localhost:8094'
-
-    agent.write(
-      [
-        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-      ]
-    )
-
-    recv = server.read_nonblock(4096)
-
-    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-
-    server.close
+    it 'write points' do
+      agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
+      expect(socket_read).to eq 'demo,a=1,b=2 a=1i,b=2.1'
+    end
   end
 
-  it 'default server' do
-    server = UDPSocket.new
-    server.bind 'localhost', 8094
+  context 'with default' do
+    let(:agent) { ::Telegraf::Agent.new 'udp://localhost:8094' }
+    let(:socket) { UDPSocket.new.tap {|s| s.bind 'localhost', 8094 } }
 
-    agent = Telegraf::Agent.new
-
-    agent.write(
-      [
-        {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-        {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-      ]
-    )
-
-    recv = server.read_nonblock(4096)
-
-    expect(recv).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"
-
-    server.close
+    it 'writes points to UDP on localhost:8094' do
+      agent.write('demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1})
+      expect(socket_read).to eq 'demo,a=1,b=2 a=1i,b=2.1'
+    end
   end
 end

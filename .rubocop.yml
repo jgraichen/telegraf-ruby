@@ -4,12 +4,18 @@ AllCops:
   TargetRubyVersion: 2.5
 
 
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
 Layout/CaseIndentation:
   EnforcedStyle: end
   IndentOneStep: true
   SupportedStyles:
     - case
     - end
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
 
 Layout/LineLength:
   Exclude:
@@ -55,6 +61,10 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: false
+
+Style/RescueModifier:
+  Exclude:
+    - spec/**/*_spec.rb
 
 Style/TrivialAccessors:
   AllowPredicates: true
