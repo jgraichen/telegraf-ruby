@@ -97,5 +97,15 @@ RSpec.describe Telegraf::Railtie do
       })
       expect(parsed[0].values.keys).to match_array %w[action_ms app_ms db_ms request_ms send_ms view_ms]
     end
+
+    context 'with global tags' do
+      before { config.telegraf.rack.tags = {my: 'tag'} }
+      after { config.telegraf.rack.tags = {} }
+
+      it 'include global tags' do
+        mock.request
+        expect(socket_parse[0].tags).to include 'my' => 'tag'
+      end
+    end
   end
 end
