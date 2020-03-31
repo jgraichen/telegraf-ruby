@@ -4,6 +4,40 @@ require 'rails'
 require 'telegraf/rack'
 
 module Telegraf
+  # Telegraf::Railtie
+  #
+  # This Rails plugin installs the rack middleware and adds intrumentation to
+  # enrich the data point with additional tags an values.
+  #
+  # These include the following tags:
+  #
+  # * `action`
+  #     The controller action, e.g. `index`.
+  #
+  # * `controller`
+  #     The controller class name, e.g. `API::UsersController`.
+  #
+  # * `instance`
+  #     A combination of the controller class and the action, e.g.
+  #     `API::UsersController#index`.
+  #
+  # * `method`
+  #     The request method, e.g. `GET`.
+  #
+  # Additional collected values are:
+  #
+  # * `db_ms`
+  #     Time spend with database operations in milliseconds.
+  #
+  # * `view_ms`
+  #     Time spend with rendering views in milliseconds.
+  #
+  # * `action_ms`
+  #     Total time spend in a Rails action in milliseconds.
+  #
+  # These additional tags and values are collection from the
+  # `process_action.action_controller` events usings Rails instrumentation.
+  #
   class Railtie < ::Rails::Railtie
     config.telegraf = ::ActiveSupport::OrderedOptions.new
 
