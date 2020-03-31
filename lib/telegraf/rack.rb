@@ -8,7 +8,7 @@ module Telegraf
   # This rack middleware collects request metrics and sends them to the telegraf
   # agent. A `Point` data structure is added to the Rack environment to assign
   # custom tags and values. This point can be accessed using the environment key
-  # in `::Telegraf::Rack::FIELD_NAME`.
+  # defined in `::Telegraf::Rack::FIELD_NAME`.
   #
   # Example:
   #

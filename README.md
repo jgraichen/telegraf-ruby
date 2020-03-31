@@ -55,7 +55,7 @@ This gem include a Rails plugin and a rack middleware to collect request events.
 
 ### Rack
 
-```
+```ruby
 require "telegraf/rack"
 
 agent = ::Telegraf::Agent.new
@@ -70,7 +70,7 @@ The Rack middleware supports parsing the `X-Request-Start: t=<timestamp>` header
 
 The Rails plugin needs to required too but by default automatically installs required components.
 
-```
+```ruby
 # e.g. in application.rb
 
 require "telegraf/rails"
