@@ -59,7 +59,7 @@ module Telegraf
         queue_ms = (::Time.now.utc - request_start) * 1000 # milliseconds
       end
 
-      request_start = ::Rack::Utils.clock_time
+      rack_start = ::Rack::Utils.clock_time
       point = env[FIELD_NAME] = Point.new(@tags.dup, {})
       point.values[:queue_ms] = queue_ms if queue_ms
 
@@ -69,7 +69,7 @@ module Telegraf
         ensure
           point.tags[:status] ||= status || -1
           point.values[:app_ms] = \
-            (::Rack::Utils.clock_time - request_start) * 1000 # milliseconds
+            (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
         end
 
         send_start = ::Rack::Utils.clock_time
@@ -77,20 +77,20 @@ module Telegraf
           point.values[:send_ms] = \
             (::Rack::Utils.clock_time - send_start) * 1000 # milliseconds
 
-          finish(point, request_start)
+          finish(point, rack_start)
         end
 
         [status, headers, proxy]
       ensure
-        finish(point, request_start) unless proxy
+        finish(point, rack_start) unless proxy
       end
     end
 
     private
 
-    def finish(point, request_start)
+    def finish(point, rack_start)
       point.values[:request_ms] = \
-        (::Rack::Utils.clock_time - request_start) * 1000 # milliseconds
+        (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
 
       @agent.write(@series, tags: point.tags, values: point.values)
     rescue StandardError => e
