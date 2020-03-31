@@ -51,7 +51,7 @@ module Telegraf
       @tags = tags.freeze
       @agent = agent
       @series = series.to_s.freeze
-      @logger = logger || ::Logger.new(STDOUT)
+      @logger = logger
     end
 
     def call(env)
@@ -77,24 +77,24 @@ module Telegraf
           point.values[:send_ms] = \
             (::Rack::Utils.clock_time - send_start) * 1000 # milliseconds
 
-          finish(point, rack_start)
+          finish(env, point, rack_start)
         end
 
         [status, headers, proxy]
       ensure
-        finish(point, rack_start) unless proxy
+        finish(env, point, rack_start) unless proxy
       end
     end
 
     private
 
-    def finish(point, rack_start)
+    def finish(env, point, rack_start)
       point.values[:request_ms] = \
         (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
 
       @agent.write(@series, tags: point.tags, values: point.values)
     rescue StandardError => e
-      @logger.error(e)
+      (@logger || env[::Rack::RACK_LOGGER])&.error(e)
     end
 
     def extract_request_start(env)

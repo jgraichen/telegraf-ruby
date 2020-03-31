@@ -8,11 +8,12 @@ require 'tmpdir'
 
 RSpec.describe Telegraf::Rack do
   subject(:mock) do
-    ::Rack::MockRequest.new(described_class.new(app, agent: agent))
+    ::Rack::MockRequest.new(described_class.new(app, agent: agent, **args))
   end
 
   let(:socket) { UNIXServer.new "#{tmpdir}/sock" }
   let(:agent) { Telegraf::Agent.new "unix:#{tmpdir}/sock" }
+  let(:args) { {} }
 
   let(:app) { ->(_env) { [200, {}, []] } }
 
@@ -66,6 +67,37 @@ RSpec.describe Telegraf::Rack do
 
       expect(last_point.tags).to include 'my' => 'tag'
       expect(last_point.values).to include 'val' => '100i'
+    end
+  end
+
+  context 'with write error' do
+    before { expect(agent).to receive(:write).and_raise('write failed') }
+    let(:io) { ::StringIO.new }
+
+    it 'logs error to rack logger' do
+      mock.request('GET', '/', {'rack.logger' => ::Logger.new(io)})
+
+      expect(io.string).to match /ERROR .* write failed \(RuntimeError\)/
+    end
+
+    context 'with explicitly given logger' do
+      let(:args) { {logger: ::Logger.new(io)} }
+
+      it 'logs error to given logger' do
+        rackio = ::StringIO.new
+        mock.request('GET', '/', {'rack.logger' => ::Logger.new(rackio)})
+
+        expect(io.string).to match /ERROR .* write failed \(RuntimeError\)/
+        expect(rackio.string).to be_empty
+      end
+    end
+
+    context 'without logger' do
+      it 'nothing happens' do
+        expect do
+          mock.request('GET', '/', {'rack.logger' => nil})
+        end.not_to raise_error
+      end
     end
   end
 end
