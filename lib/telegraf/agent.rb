@@ -7,8 +7,8 @@ module Telegraf
     attr_reader :uri
     attr_reader :logger
 
-    def initialize(uri = DEFAULT_CONNECTION, logger: nil)
-      @uri = URI.parse(uri)
+    def initialize(uri = nil, logger: nil)
+      @uri = URI.parse(uri || DEFAULT_CONNECTION)
       @logger = logger
     end
 
