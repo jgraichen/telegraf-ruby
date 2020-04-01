@@ -2,10 +2,11 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "~> 0.80.0"
+gem "appraisal"
+gem "rake-release", "~> 1.2"
 gem "rake"
 gem "rspec", "~> 3.8"
-gem "appraisal"
+gem "rubocop", "~> 0.80.0"
 gem "rack", "~> 2.2.0"
 gem "railties"
 
