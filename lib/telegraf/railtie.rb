@@ -51,7 +51,7 @@ module Telegraf
     config.telegraf.rack.tags = {}
 
     # Install request instrumentation
-    config.telegraf.instrumenation = true
+    config.telegraf.instrumentation = true
 
     initializer 'telegraf.agent' do |app|
       app.config.telegraf.agent ||= begin
@@ -72,7 +72,7 @@ module Telegraf
     end
 
     initializer 'telegraf.instrumentation' do |app|
-      next unless app.config.telegraf.instrumenation
+      next unless app.config.telegraf.instrumentation
 
       ActiveSupport::Notifications.subscribe(
         'process_action.action_controller'
