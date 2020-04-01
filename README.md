@@ -86,7 +86,7 @@ class MyApplication > ::Rails::Application
 
   # Additionally the application is instrumented to tag events with
   # controller and action as well as to collect app, database and view timings
-  config.telegraf.instrumenation = true
+  config.telegraf.instrumentation = true
 end
 ```
 
