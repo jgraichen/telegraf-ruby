@@ -2,7 +2,7 @@
 
 Send events to a local [Telegraf](https://github.com/influxdata/telegraf) agent or anything that can receive the InfluxDB line protocol.
 
-It further includes plugins for Rack and Rails to collect request events. See plugin usage details below.
+It further includes plugins for Rack, Rails and Sidekiq to collect request events. See plugin usage details below.
 
 This gem only uses the line protocol from the `influxdb` gem and does not depend on any specific version. This may break in the future but does not restrict you in using a your preferred `influxdb` gem version.
 
@@ -51,7 +51,7 @@ There is no exception handling.
 
 ## Using the Rack and Rails plugins
 
-This gem include a Rails plugin and a rack middleware to collect request events. They need to be explicitly required to be used:
+This gem include a Rails plugin and middlewares for Rack and Sidekiq to collect request events. They need to be explicitly required to be used:
 
 ### Rack
 
@@ -68,7 +68,7 @@ The Rack middleware supports parsing the `X-Request-Start: t=<timestamp>` header
 
 ### Rails
 
-The Rails plugin needs to required too but by default automatically installs required components.
+The Rails plugin needs to required, too, but by default automatically installs required components (Rack, Sidekiq and Rails-specific instrumentation).
 
 ```ruby
 # e.g. in application.rb
@@ -84,6 +84,11 @@ class MyApplication > ::Rails::Application
   config.telegraf.rack.series = "requests"
   config.telegraf.rack.tags = {}
 
+  # These are the default settings when Sidekiq is detected
+  config.telegraf.sidekiq.enabled = true
+  config.telegraf.sidekiq.series = "sidekiq"
+  config.telegraf.sidekiq.tags = {}
+
   # Additionally the application is instrumented to tag events with
   # controller and action as well as to collect app, database and view timings
   config.telegraf.instrumentation = true
@@ -96,7 +101,26 @@ Received event example:
 requests,action=index,controller=TestController,instance=TestController#index,method=GET,status=200 db_ms=0.0,view_ms=2.6217450003969134,action_ms=2.702335,app_ms=4.603561000294576,send_ms=0.09295000018028077,request_ms=4.699011000411701,queue_ms=0.00003000028323014
 ```
 
-See the rack middleware [class documentation](lib/telegraf/rack.rb) and the Rails plugin [class documentation](lib/telegraf/railtie.rb) for more details on  the collected tags and values.
+See the various classes' documentation for more details on the collected tags and values:
+- [Rack middleware](lib/telegraf/rack.rb)
+- [Rails plugin](lib/telegraf/railtie.rb)
+- [Sidekiq middleware](lib/telegraf/sidekiq.rb)
+
+### Sidekiq
+
+```ruby
+require "telegraf/sidekiq"
+
+agent = ::Telegraf::Agent.new
+Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|
+    chain.add ::Telegraf::Sidekiq::Middleware, agent: agent, series: 'background', tags: {global: 'tag'}
+  end
+end
+```
+
+See middleware [class documentation](lib/telegraf/sidekiq.rb) for more details.
+
 
 ## License
 
