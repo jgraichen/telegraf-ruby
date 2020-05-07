@@ -10,6 +10,7 @@ gem 'rubocop', '~> 0.80.0'
 
 gem 'rack'
 gem 'railties'
+gem 'sidekiq', '~> 6.0'
 
 # Specify your gem's dependencies in telegraf.gemspec
 gemspec

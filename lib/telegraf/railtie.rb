@@ -2,6 +2,7 @@
 
 require 'rails'
 require 'telegraf/rack'
+require 'telegraf/sidekiq'
 
 module Telegraf
   # Telegraf::Railtie
@@ -44,7 +45,7 @@ module Telegraf
     # Connect URI or tuple
     config.telegraf.connect = ::Telegraf::Agent::DEFAULT_CONNECTION
 
-    # Install rackmiddlewares
+    # Install Rack middlewares
     config.telegraf.rack = ::ActiveSupport::OrderedOptions.new
     config.telegraf.rack.enabled = true
     config.telegraf.rack.series = 'requests'
@@ -52,6 +53,12 @@ module Telegraf
 
     # Install request instrumentation
     config.telegraf.instrumentation = true
+
+    # Install Sidekiq middleware
+    config.telegraf.sidekiq = ::ActiveSupport::OrderedOptions.new
+    config.telegraf.sidekiq.enabled = defined?(::Sidekiq)
+    config.telegraf.sidekiq.series = 'sidekiq'
+    config.telegraf.sidekiq.tags = {}
 
     initializer 'telegraf.agent' do |app|
       app.config.telegraf.agent ||= begin
@@ -88,6 +95,19 @@ module Telegraf
         point.values[:db_ms] = payload[:db_runtime].to_f
         point.values[:view_ms] = payload[:view_runtime].to_f
         point.values[:action_ms] = ((finish - start) * 1000.0) # milliseconds
+      end
+    end
+
+    initializer 'telegraf.sidekiq' do |app|
+      next unless app.config.telegraf.sidekiq.enabled
+
+      ::Sidekiq.configure_server do |config|
+        config.server_middleware do |chain|
+          chain.add Telegraf::Sidekiq::Middleware, \
+            agent: app.config.telegraf.agent,
+            series: app.config.telegraf.sidekiq.series,
+            tags: app.config.telegraf.sidekiq.tags
+        end
       end
     end
   end
