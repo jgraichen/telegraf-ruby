@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Metric Reporter to local telegraf agent'
   spec.description   = 'Metric Reporter to local telegraf agent'
-  spec.homepage      = 'https://github.com/jgraichen/ruby-telegraf'
+  spec.homepage      = 'https://github.com/jgraichen/telegraf-ruby'
   spec.license       = 'LGPLv3'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
