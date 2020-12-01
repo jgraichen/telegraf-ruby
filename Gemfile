@@ -11,7 +11,7 @@ gem 'rubocop', '~> 0.80.0'
 
 group :test do
   gem 'rack'
-  gem 'railties'
+  gem 'rails'
   gem 'sidekiq', '~> 6.0'
 end
 
