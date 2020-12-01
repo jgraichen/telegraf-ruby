@@ -2,13 +2,19 @@
 
 source "https://rubygems.org"
 
-gem "appraisal"
-gem "rake-release", "~> 1.2"
 gem "rake"
 gem "rspec", "~> 3.8"
 gem "rubocop", "~> 0.80.0"
-gem "rack", "~> 2.0.0"
-gem "railties"
-gem "sidekiq", "~> 6.0"
+
+group :test do
+  gem "rack", "~> 2.0.0"
+  gem "railties"
+  gem "sidekiq", "~> 6.0"
+end
+
+group :development do
+  gem "appraisal"
+  gem "rake-release", "~> 1.2"
+end
 
 gemspec path: "../"
