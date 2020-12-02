@@ -2,7 +2,7 @@
 
 Send events to a local [Telegraf](https://github.com/influxdata/telegraf) agent or anything that can receive the InfluxDB line protocol.
 
-It further includes plugins for Rack, Rails and Sidekiq to collect request events. See plugin usage details below.
+It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect request events. See plugin usage details below.
 
 This gem only uses the line protocol from the `influxdb` gem and does not depend on any specific version. This may break in the future but does not restrict you in using a your preferred `influxdb` gem version.
 
@@ -51,7 +51,7 @@ There is no exception handling.
 
 ## Using the Rack and Rails plugins
 
-This gem include a Rails plugin and middlewares for Rack and Sidekiq to collect request events. They need to be explicitly required to be used:
+This gem include a Rails plugin and middlewares / adapters for Rack, ActiveJob and Sidekiq to collect request and background worker events. They need to be explicitly required to be used:
 
 ### Rack
 
@@ -68,7 +68,7 @@ The Rack middleware supports parsing the `X-Request-Start: t=<timestamp>` header
 
 ### Rails
 
-The Rails plugin needs to required, too, but by default automatically installs required components (Rack, Sidekiq and Rails-specific instrumentation).
+The Rails plugin needs to required, too, but by default automatically installs required components (Rack, ActiveJob, Sidekiq and Rails-specific instrumentation).
 
 ```ruby
 # e.g. in application.rb
@@ -83,6 +83,11 @@ class MyApplication > ::Rails::Application
   config.telegraf.rack.enabled = true
   config.telegraf.rack.series = "requests"
   config.telegraf.rack.tags = {}
+
+  # These are the default settings when ActiveJob is detected
+  config.telegraf.active_job.enabled = true
+  config.telegraf.active_job.series = "active_job"
+  config.telegraf.active_job.tags = {}
 
   # These are the default settings when Sidekiq is detected
   config.telegraf.sidekiq.enabled = true
@@ -104,7 +109,22 @@ requests,action=index,controller=TestController,instance=TestController#index,me
 See the various classes' documentation for more details on the collected tags and values:
 - [Rack middleware](lib/telegraf/rack.rb)
 - [Rails plugin](lib/telegraf/railtie.rb)
+- [ActiveJob plugin](lib/telegraf/active_job.rb)
 - [Sidekiq middleware](lib/telegraf/sidekiq.rb)
+
+### ActiveJob
+
+```ruby
+require "telegraf/active_job"
+
+agent = ::Telegraf::Agent.new
+ActiveSupport::Notifications.subscribe(
+  'perform.active_job',
+  Telegraf::ActiveJob.new(agent: agent, series: 'background', tags: {global: 'tag'})
+)
+```
+
+See plugin [class documentation](lib/telegraf/active_job.rb) for more details.
 
 ### Sidekiq
 
