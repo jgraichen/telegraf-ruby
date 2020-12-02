@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails'
+require 'telegraf/active_job'
 require 'telegraf/rack'
 require 'telegraf/sidekiq'
 
@@ -54,6 +55,12 @@ module Telegraf
     # Install request instrumentation
     config.telegraf.instrumentation = true
 
+    # Install ActiveJob instrumentation
+    config.telegraf.active_job = ::ActiveSupport::OrderedOptions.new
+    config.telegraf.active_job.enabled = defined?(::ActiveJob)
+    config.telegraf.active_job.series = 'active_job'
+    config.telegraf.active_job.tags = {}
+
     # Install Sidekiq middleware
     config.telegraf.sidekiq = ::ActiveSupport::OrderedOptions.new
     config.telegraf.sidekiq.enabled = defined?(::Sidekiq)
@@ -96,6 +103,19 @@ module Telegraf
         point.values[:view_ms] = payload[:view_runtime].to_f
         point.values[:action_ms] = ((finish - start) * 1000.0) # milliseconds
       end
+    end
+
+    initializer 'telegraf.active_job' do |app|
+      next unless app.config.telegraf.active_job.enabled
+
+      ActiveSupport::Notifications.subscribe(
+        'perform.active_job',
+        Telegraf::ActiveJob.new(
+          agent: app.config.telegraf.agent,
+          series: app.config.telegraf.active_job.series,
+          tags: app.config.telegraf.active_job.tags
+        )
+      )
     end
 
     initializer 'telegraf.sidekiq' do |app|
