@@ -26,6 +26,15 @@ RSpec.describe Telegraf::Railtie do
     end
   end
 
+  around do |example|
+    defaults = config.telegraf.deep_dup
+    begin
+      example.run
+    ensure
+      config.telegraf = defaults
+    end
+  end
+
   let(:config) { app.config }
   let(:application) { app.tap(&:initialize!) }
 
@@ -54,7 +63,12 @@ RSpec.describe Telegraf::Railtie do
 
   describe '<initialize>' do
     it 'creates a telegraf agent' do
-      expect(application.config.telegraf.agent).to be_a ::Telegraf::Agent
+      config.telegraf.connect = 'tcp://localhost:1234'
+
+      application.config.telegraf.agent.tap do |agent|
+        expect(agent).to be_a ::Telegraf::Agent
+        expect(agent.uri).to eq URI.parse('tcp://localhost:1234')
+      end
     end
 
     it 'installs middleware in first place' do
@@ -69,7 +83,6 @@ RSpec.describe Telegraf::Railtie do
 
     context 'with rack disabled' do
       before { config.telegraf.rack.enabled = false }
-      after { config.telegraf.rack.enabled = true }
 
       it 'does not install middleware' do
         expect(application.config.middleware.to_a).not_to include ::Telegraf::Rack
@@ -100,7 +113,6 @@ RSpec.describe Telegraf::Railtie do
 
     context 'with global tags' do
       before { config.telegraf.rack.tags = {my: 'tag'} }
-      after { config.telegraf.rack.tags = {} }
 
       it 'include global tags' do
         mock.request
