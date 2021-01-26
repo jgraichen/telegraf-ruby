@@ -4,11 +4,12 @@ source "https://rubygems.org"
 
 gem "rake"
 gem "rspec", "~> 3.8"
-gem "rubocop", "~> 0.80.0"
+gem "rubocop", "~> 1.7"
+gem "rubocop-rspec", "~> 1.41"
 
 group :test do
   gem "rack"
-  gem "rails", "~> 5.0.0"
+  gem "rails", "~> 6.1.0"
   gem "sidekiq", "~> 6.0"
 end
 
