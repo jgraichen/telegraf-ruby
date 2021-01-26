@@ -44,7 +44,13 @@ module Telegraf
     FIELD_NAME = 'telegraf.rack.point'
     HEADER_REGEX = /t=(\d+(\.\d+)?)/.freeze
 
+    # Warning: `:values` member overrides `Struct#values` and it may be
+    # unexpected, but nothing we can change here as this is an import public API
+    # right now.
+    #
+    # rubocop:disable Lint/StructNewOverride
     Point = Struct.new(:tags, :values)
+    # rubocop:enable Lint/StructNewOverride
 
     def initialize(app, agent:, series: 'rack', tags: {}, logger: nil)
       @app = app

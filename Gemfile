@@ -7,7 +7,8 @@ gemspec
 
 gem 'rake'
 gem 'rspec', '~> 3.8'
-gem 'rubocop', '~> 0.80.0'
+gem 'rubocop', '~> 1.7'
+gem 'rubocop-rspec', '~> 1.41'
 
 group :test do
   gem 'rack'

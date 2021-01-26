@@ -4,8 +4,7 @@ module Telegraf
   class Agent
     DEFAULT_CONNECTION = 'udp://localhost:8094'
 
-    attr_reader :uri
-    attr_reader :logger
+    attr_reader :uri, :logger
 
     def initialize(uri = nil, logger: nil)
       @uri = URI.parse(uri || DEFAULT_CONNECTION)

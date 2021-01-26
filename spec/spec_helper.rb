@@ -20,7 +20,7 @@ module Support
   module Socket
     extend RSpec::SharedContext
 
-    Point = Struct.new(:series, :tags, :values, :timestamp)
+    Point = Struct.new(:series, :tags, :values, :timestamp) # rubocop:disable Lint/StructNewOverride
 
     let(:socket) { nil }
     let(:last_points) { socket_parse }

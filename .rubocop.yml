@@ -1,6 +1,8 @@
 AllCops:
   Include:
-    - '**/*.rb'
+    - "**/*.rb"
+  NewCops: enable
+  SuggestExtensions: false
   TargetRubyVersion: 2.5
 
 
@@ -60,6 +62,9 @@ Style/HashTransformKeys:
   Enabled: false
 
 Style/HashTransformValues:
+  Enabled: false
+
+Style/IfUnlessModifier:
   Enabled: false
 
 Style/RescueModifier:
