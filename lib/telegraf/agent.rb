@@ -4,10 +4,11 @@ module Telegraf
   class Agent
     DEFAULT_CONNECTION = 'udp://localhost:8094'
 
-    attr_reader :uri, :logger
+    attr_reader :uri, :logger, :tags
 
-    def initialize(uri = nil, logger: nil)
+    def initialize(uri = nil, logger: nil, tags: {})
       @uri = URI.parse(uri || DEFAULT_CONNECTION)
+      @tags = tags
       @logger = logger
     end
 
@@ -20,6 +21,8 @@ module Telegraf
     end
 
     def write!(data, series: nil, tags: nil, values: nil)
+      tags = tags.merge(@tags) unless @tags.empty?
+
       if values
         data = [{series: series || data.to_s, tags: tags, values: values}]
       end
