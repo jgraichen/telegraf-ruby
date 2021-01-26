@@ -77,7 +77,7 @@ RSpec.describe Telegraf::Rack do
     it 'logs error to rack logger' do
       mock.request('GET', '/', {'rack.logger' => ::Logger.new(io)})
 
-      expect(io.string).to match /ERROR .* write failed \(RuntimeError\)/
+      expect(io.string).to match(/ERROR .* write failed \(RuntimeError\)/)
     end
 
     context 'with explicitly given logger' do
@@ -87,7 +87,7 @@ RSpec.describe Telegraf::Rack do
         rackio = ::StringIO.new
         mock.request('GET', '/', {'rack.logger' => ::Logger.new(rackio)})
 
-        expect(io.string).to match /ERROR .* write failed \(RuntimeError\)/
+        expect(io.string).to match(/ERROR .* write failed \(RuntimeError\)/)
         expect(rackio.string).to be_empty
       end
     end
