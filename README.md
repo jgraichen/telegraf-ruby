@@ -80,6 +80,10 @@ class MyApplication > ::Rails::Application
   # Configure receiver
   config.telegraf.connect = "udp://localhost:9084"
 
+  # Global tags added to all events. These will override
+  # any local tag with the same name.
+  config.telegraf.tags = {}
+
   # By default the Rack middleware to collect events is installed
   config.telegraf.rack.enabled = true
   config.telegraf.rack.series = "requests"
