@@ -45,6 +45,11 @@ RSpec.describe Telegraf::Railtie do
       end
     end
 
+    describe 'telegraf.tags' do
+      subject { config.telegraf.tags }
+      it { is_expected.to eq({}) }
+    end
+
     describe 'telegraf.rack.enabled' do
       subject { config.telegraf.rack.enabled }
       it { is_expected.to eq true }
@@ -64,10 +69,12 @@ RSpec.describe Telegraf::Railtie do
   describe '<initialize>' do
     it 'creates a telegraf agent' do
       config.telegraf.connect = 'tcp://localhost:1234'
+      config.telegraf.tags = {app: 'name'}
 
       application.config.telegraf.agent.tap do |agent|
         expect(agent).to be_a ::Telegraf::Agent
         expect(agent.uri).to eq URI.parse('tcp://localhost:1234')
+        expect(agent.tags).to eq({app: 'name'})
       end
     end
 

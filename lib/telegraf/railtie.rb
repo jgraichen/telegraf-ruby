@@ -45,6 +45,7 @@ module Telegraf
 
     # Connect URI or tuple
     config.telegraf.connect = ::Telegraf::Agent::DEFAULT_CONNECTION
+    config.telegraf.tags = {}
 
     # Install Rack middlewares
     config.telegraf.rack = ::ActiveSupport::OrderedOptions.new
@@ -71,7 +72,8 @@ module Telegraf
       app.config.telegraf.agent ||= begin
         ::Telegraf::Agent.new \
           app.config.telegraf.connect,
-          logger: Rails.logger
+          logger: Rails.logger,
+          tags: app.config.telegraf.tags
       end
     end
 
