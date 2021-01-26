@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails'
+require 'telegraf'
 require 'telegraf/active_job'
 require 'telegraf/rack'
 require 'telegraf/sidekiq'

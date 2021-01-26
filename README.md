@@ -68,11 +68,12 @@ The Rack middleware supports parsing the `X-Request-Start: t=<timestamp>` header
 
 ### Rails
 
-The Rails plugin needs to required, too, but by default automatically installs required components (Rack, ActiveJob, Sidekiq and Rails-specific instrumentation).
+The Rails plugin needs to be required, too, but will automatically install additional components (Rack, ActiveJob, Sidekiq and Rails-specific instrumentation).
 
 ```ruby
 # e.g. in application.rb
 
+# Load rails plugin (!) or add `require: 'telegraf/rails'` to Gemfile
 require "telegraf/rails"
 
 class MyApplication > ::Rails::Application
