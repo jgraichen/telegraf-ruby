@@ -78,7 +78,7 @@ require "telegraf/rails"
 
 class MyApplication > ::Rails::Application
   # Configure receiver
-  config.telegraf.connect = "udp://localhost:9084"
+  config.telegraf.connect = "udp://localhost:8094"
 
   # Global tags added to all events. These will override
   # any local tag with the same name.
