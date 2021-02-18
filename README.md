@@ -125,7 +125,7 @@ require "telegraf/active_job"
 agent = ::Telegraf::Agent.new
 ActiveSupport::Notifications.subscribe(
   'perform.active_job',
-  Telegraf::ActiveJob.new(agent: agent, series: 'background', tags: {global: 'tag'})
+  Telegraf::ActiveJob.new(agent: agent, series: 'active_job', tags: {global: 'tag'})
 )
 ```
 
@@ -139,7 +139,7 @@ require "telegraf/sidekiq"
 agent = ::Telegraf::Agent.new
 Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
-    chain.add ::Telegraf::Sidekiq::Middleware, agent: agent, series: 'background', tags: {global: 'tag'}
+    chain.add ::Telegraf::Sidekiq::Middleware, agent: agent, series: 'sidekiq', tags: {global: 'tag'}
   end
 end
 ```
