@@ -56,7 +56,10 @@ module Telegraf
         }
 
         values = {
-          retry_count: job['retry_count']
+          retry_count: job['retry_count'],
+          total_workers_count: ::Sidekiq.options[:concurrency],
+          workers_running_a_job: ::Sidekiq::Workers.new.size,
+          latency: ::Sidekiq::Queue.new.latency.to_f
         }.compact
 
         # The "enqueued_at" key is not present for scheduled jobs.
