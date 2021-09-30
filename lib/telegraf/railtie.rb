@@ -70,12 +70,11 @@ module Telegraf
     config.telegraf.sidekiq.tags = {}
 
     initializer 'telegraf.agent' do |app|
-      app.config.telegraf.agent ||= begin
+      app.config.telegraf.agent ||= \
         ::Telegraf::Agent.new \
           app.config.telegraf.connect,
           logger: Rails.logger,
           tags: app.config.telegraf.tags
-      end
     end
 
     initializer 'telegraf.rack' do |app|
