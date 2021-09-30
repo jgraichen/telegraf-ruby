@@ -37,10 +37,10 @@ module Telegraf
     #     Only present for "normal" (async) jobs (with tag `type` of "job").
     #
     class Middleware
-      def initialize(agent:, series: 'sidekiq', tags: {})
+      def initialize(agent, options = {})
         @agent = agent
-        @series = series.to_s.freeze
-        @tags = tags.freeze
+        @series = options.fetch(:series, 'sidekiq').to_str.freeze
+        @tags = options.fetch(:tags, {}).to_hash.freeze
       end
 
       def call(worker, job, queue)

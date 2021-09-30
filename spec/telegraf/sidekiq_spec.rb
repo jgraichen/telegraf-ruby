@@ -37,7 +37,7 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
 
   before do
     Sidekiq::Testing.server_middleware do |chain|
-      chain.add Telegraf::Sidekiq::Middleware, agent: agent, **args
+      chain.add Telegraf::Sidekiq::Middleware, agent, args
     end
 
     Sidekiq::Worker.clear_all

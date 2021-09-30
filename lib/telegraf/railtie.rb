@@ -126,9 +126,11 @@ module Telegraf
       ::Sidekiq.configure_server do |config|
         config.server_middleware do |chain|
           chain.add Telegraf::Sidekiq::Middleware, \
-            agent: app.config.telegraf.agent,
-            series: app.config.telegraf.sidekiq.series,
-            tags: app.config.telegraf.sidekiq.tags
+            app.config.telegraf.agent,
+            {
+              series: app.config.telegraf.sidekiq.series,
+              tags: app.config.telegraf.sidekiq.tags
+            }
         end
       end
     end
