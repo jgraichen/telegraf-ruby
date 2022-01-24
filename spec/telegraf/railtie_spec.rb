@@ -36,7 +36,14 @@ RSpec.describe Telegraf::Railtie do
   end
 
   let(:config) { app.config }
-  let(:application) { app.tap(&:initialize!) }
+  let(:application) do
+    # Rails removes the support of multiple instances, which includes freezing some setting values.
+    # This is the workaround to avoid FrozenError. Related issue: https://github.com/rails/rails/issues/42319
+    ActiveSupport::Dependencies.autoload_once_paths = []
+    ActiveSupport::Dependencies.autoload_paths = []
+
+    app.tap(&:initialize!)
+  end
 
   describe '<config>' do
     describe 'telegraf.connect' do
