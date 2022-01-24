@@ -1,5 +1,8 @@
 # Telegraf
 
+[![Gem Version](https://img.shields.io/gem/v/telegraf?logo=ruby)](https://rubygems.org/gems/telegraf)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jgraichen/telegraf-ruby/test?logo=github)](https://github.com/jgraichen/telegraf-ruby/actions)
+
 Send events to a local [Telegraf](https://github.com/influxdata/telegraf) agent or anything that can receive the InfluxDB line protocol.
 
 It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect request events. See plugin usage details below.
