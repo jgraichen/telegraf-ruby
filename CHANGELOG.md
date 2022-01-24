@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.0] - 2022-01-24
+### Added
+- Support for Rails 7.0 and Ruby 3.1
+- Grape API instrumentation (#17)
+
 ## [2.0.0] - 2021-09-30
 ### Changed
 - The sidekiq middleware does not use keyword arguments as sidekiq does not handle them correctly on Ruby 3.0 (#14)
@@ -34,7 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Remove `influxdb` not unnecessarily restrict users needing a specific influxdb client.
 
-[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/jgraichen/telegraf-ruby/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/jgraichen/telegraf-ruby/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/jgraichen/telegraf-ruby/compare/v0.8.0...v1.0.0
 [0.8.0]: https://github.com/jgraichen/telegraf-ruby/compare/v0.7.0...v0.8.0
