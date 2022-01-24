@@ -1,75 +1,11 @@
+# vim: ft=yaml
+
+inherit_gem:
+  my-rubocop: default.yml
+
 AllCops:
-  Include:
-    - "**/*.rb"
-  NewCops: enable
-  SuggestExtensions: false
   TargetRubyVersion: 2.5
+  SuggestExtensions: False
 
-
-Layout/ArgumentAlignment:
-  EnforcedStyle: with_fixed_indentation
-
-Layout/CaseIndentation:
-  EnforcedStyle: end
-  IndentOneStep: true
-  SupportedStyles:
-    - case
-    - end
-
-Layout/FirstHashElementIndentation:
-  EnforcedStyle: consistent
-
-Layout/LineLength:
-  Exclude:
-    - spec/**/*_spec.rb
-
-Layout/SpaceInsideBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: no_space
-  SpaceBeforeBlockParameters: false
-
-Layout/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-
-
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*_spec.rb
-
-Metrics/MethodLength:
-  Enabled: false
-
-
-Naming/FileName:
-  Exclude:
-    - Rakefile
-    - Gemfile
-
-
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-Style/Documentation:
-  Enabled: false
-
-Style/HashEachMethods:
-  Enabled: false
-
-Style/HashTransformKeys:
-  Enabled: false
-
-Style/HashTransformValues:
-  Enabled: false
-
-Style/IfUnlessModifier:
-  Enabled: false
-
-Style/RescueModifier:
-  Exclude:
-    - spec/**/*_spec.rb
-
-Style/TrivialAccessors:
-  AllowPredicates: true
+RSpec/FilePath:
+  Enabled: False
