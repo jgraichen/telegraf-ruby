@@ -3,6 +3,7 @@
 require 'rails'
 require 'telegraf'
 require 'telegraf/active_job'
+require 'telegraf/grape'
 require 'telegraf/rack'
 require 'telegraf/sidekiq'
 
@@ -57,6 +58,10 @@ module Telegraf
     # Install request instrumentation
     config.telegraf.instrumentation = true
 
+    # Install Grape instrumentation
+    config.telegraf.grape = ::ActiveSupport::OrderedOptions.new
+    config.telegraf.grape.enabled = defined?(::Grape)
+
     # Install ActiveJob instrumentation
     config.telegraf.active_job = ::ActiveSupport::OrderedOptions.new
     config.telegraf.active_job.enabled = defined?(::ActiveJob)
@@ -105,6 +110,15 @@ module Telegraf
         point.values[:view_ms] = payload[:view_runtime].to_f
         point.values[:action_ms] = ((finish - start) * 1000.0) # milliseconds
       end
+    end
+
+    initializer 'telegraf.grape' do |app|
+      next unless app.config.telegraf.grape.enabled
+
+      ActiveSupport::Notifications.subscribe(
+        'endpoint_run.grape',
+        Telegraf::Grape.new
+      )
     end
 
     initializer 'telegraf.active_job' do |app|
