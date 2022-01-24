@@ -9,7 +9,7 @@ module Support
 
     attr_reader :tmpdir
 
-    around(:each) do |example|
+    around do |example|
       Dir.mktmpdir do |dir|
         @tmpdir = dir
         example.run
@@ -26,7 +26,7 @@ module Support
     let(:last_points) { socket_parse }
     let(:last_point) { last_points.first }
 
-    around(:each) do |example|
+    around do |example|
       socket
       example.run
     ensure
@@ -46,7 +46,7 @@ module Support
     end
 
     def socket_parse
-      socket_read.lines.map(&method(:_parse))
+      socket_read.lines.map {|line| _parse(line) }
     end
 
     private
@@ -56,7 +56,7 @@ module Support
     def _parse(line)
       if (m = REGEXP.match(line))
         return Point.new(
-          m[1], _parse_fields(m[2]), _parse_fields(m[3]), m[4]&.strip&.to_i
+          m[1], _parse_fields(m[2]), _parse_fields(m[3]), m[4]&.strip&.to_i,
         )
       end
 

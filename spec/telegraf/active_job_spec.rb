@@ -29,7 +29,7 @@ RSpec.describe Telegraf::ActiveJob do
   before do
     ActiveSupport::Notifications.subscribe(
       'perform.active_job',
-      Telegraf::ActiveJob.new(agent: agent, **args)
+      Telegraf::ActiveJob.new(agent: agent, **args),
     )
 
     ActiveJob::Base.logger = Logger.new(IO::NULL)

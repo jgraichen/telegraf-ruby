@@ -17,8 +17,8 @@ RSpec.describe Telegraf do
       agent.write(
         [
           {series: 'demo', tags: {a: 1, b: 2}, values: {a: 1, b: 2.1}},
-          {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}}
-        ]
+          {series: 'demo', tags: {a: '1', b: 2}, values: {a: 6, b: 2.5}},
+        ],
       )
 
       expect(socket_read).to eq "demo,a=1,b=2 a=1i,b=2.1\ndemo,a=1,b=2 a=6i,b=2.5"

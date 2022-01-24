@@ -96,7 +96,7 @@ module Telegraf
       next unless app.config.telegraf.instrumentation
 
       ActiveSupport::Notifications.subscribe(
-        'process_action.action_controller'
+        'process_action.action_controller',
       ) do |_name, start, finish, _id, payload|
         point = payload[:headers].env[::Telegraf::Rack::FIELD_NAME]
         next unless point
@@ -117,7 +117,7 @@ module Telegraf
 
       ActiveSupport::Notifications.subscribe(
         'endpoint_run.grape',
-        Telegraf::Grape.new
+        Telegraf::Grape.new,
       )
     end
 
@@ -129,8 +129,8 @@ module Telegraf
         Telegraf::ActiveJob.new(
           agent: app.config.telegraf.agent,
           series: app.config.telegraf.active_job.series,
-          tags: app.config.telegraf.active_job.tags
-        )
+          tags: app.config.telegraf.active_job.tags,
+        ),
       )
     end
 
@@ -143,7 +143,7 @@ module Telegraf
             app.config.telegraf.agent,
             {
               series: app.config.telegraf.sidekiq.series,
-              tags: app.config.telegraf.sidekiq.tags
+              tags: app.config.telegraf.sidekiq.tags,
             }
         end
       end

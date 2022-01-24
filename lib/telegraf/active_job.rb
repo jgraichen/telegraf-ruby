@@ -39,11 +39,11 @@ module Telegraf
           **@tags,
           job: job.class.name,
           queue: job.queue_name,
-          errors: payload.key?(:exception_object)
+          errors: payload.key?(:exception_object),
         },
         values: {
-          app_ms: ((finish - start) * 1000.0) # milliseconds
-        }
+          app_ms: ((finish - start) * 1000.0), # milliseconds
+        },
       )
     end
   end

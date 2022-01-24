@@ -54,21 +54,25 @@ RSpec.describe Telegraf::Railtie do
 
     describe 'telegraf.tags' do
       subject { config.telegraf.tags }
+
       it { is_expected.to eq({}) }
     end
 
     describe 'telegraf.rack.enabled' do
       subject { config.telegraf.rack.enabled }
+
       it { is_expected.to eq true }
     end
 
     describe 'telegraf.rack.series' do
       subject { config.telegraf.rack.series }
+
       it { is_expected.to eq 'requests' }
     end
 
     describe 'telegraf.rack.tags' do
       subject { config.telegraf.rack.tags }
+
       it { is_expected.to eq({}) }
     end
   end
@@ -120,7 +124,7 @@ RSpec.describe Telegraf::Railtie do
         'controller' => 'TestController',
         'instance' => 'TestController#index',
         'method' => 'GET',
-        'status' => '200'
+        'status' => '200',
       })
       expect(parsed[0].values.keys).to match_array %w[action_ms app_ms db_ms request_ms send_ms view_ms]
     end

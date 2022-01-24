@@ -52,11 +52,11 @@ module Telegraf
           errors: true,
           retry: job.key?('retried_at'),
           queue: queue,
-          worker: worker.class.name
+          worker: worker.class.name,
         }
 
         values = {
-          retry_count: job['retry_count']
+          retry_count: job['retry_count'],
         }.compact
 
         # The "enqueued_at" key is not present for scheduled jobs.
@@ -80,7 +80,7 @@ module Telegraf
           values[:app_ms] = (job_stop - job_start) * 1000 # milliseconds
 
           @agent.write(
-            @series, tags: tags, values: values
+            @series, tags: tags, values: values,
           )
         end
       end

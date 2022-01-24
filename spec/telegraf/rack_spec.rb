@@ -72,6 +72,7 @@ RSpec.describe Telegraf::Rack do
 
   context 'with write error' do
     before { expect(agent).to receive(:write).and_raise('write failed') }
+
     let(:io) { ::StringIO.new }
 
     it 'logs error to rack logger' do

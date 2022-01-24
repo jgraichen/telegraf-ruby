@@ -48,7 +48,13 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
       work!
 
       expect(last_point.series).to eq 'sidekiq'
-      expect(last_point.tags).to include 'type' => 'job', 'worker' => 'HardWorker', 'queue' => 'default', 'errors' => 'false', 'retry' => 'false'
+      expect(last_point.tags).to include(
+        'type' => 'job',
+        'worker' => 'HardWorker',
+        'queue' => 'default',
+        'errors' => 'false',
+        'retry' => 'false',
+      )
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/, 'queue_ms' => /^\d+\.\d+$/
     end
   end
@@ -60,7 +66,13 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
       work!
 
       expect(last_point.series).to eq 'sidekiq'
-      expect(last_point.tags).to include 'type' => 'scheduled_job', 'worker' => 'HardWorker', 'queue' => 'default', 'errors' => 'false', 'retry' => 'false'
+      expect(last_point.tags).to include(
+        'type' => 'scheduled_job',
+        'worker' => 'HardWorker',
+        'queue' => 'default',
+        'errors' => 'false',
+        'retry' => 'false',
+      )
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/
     end
   end
@@ -69,10 +81,20 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
     let(:queue!) { FailWorker.perform_async('test') }
 
     it 'type=job,errors=true app_ms,queue_ms' do
-      work! rescue nil
+      begin
+        work!
+      rescue StandardError
+        nil
+      end
 
       expect(last_point.series).to eq 'sidekiq'
-      expect(last_point.tags).to include 'type' => 'job', 'worker' => 'FailWorker', 'queue' => 'default', 'errors' => 'true', 'retry' => 'false'
+      expect(last_point.tags).to include(
+        'type' => 'job',
+        'worker' => 'FailWorker',
+        'queue' => 'default',
+        'errors' => 'true',
+        'retry' => 'false',
+      )
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/, 'queue_ms' => /^\d+\.\d+$/
     end
   end
@@ -84,7 +106,13 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
       work!
 
       expect(last_point.series).to eq 'background'
-      expect(last_point.tags).to include 'type' => 'job', 'worker' => 'HardWorker', 'queue' => 'default', 'errors' => 'false', 'retry' => 'false'
+      expect(last_point.tags).to include(
+        'type' => 'job',
+        'worker' => 'HardWorker',
+        'queue' => 'default',
+        'errors' => 'false',
+        'retry' => 'false',
+      )
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/, 'queue_ms' => /^\d+\.\d+$/
     end
   end
@@ -96,7 +124,14 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
       work!
 
       expect(last_point.series).to eq 'sidekiq'
-      expect(last_point.tags).to include 'type' => 'job', 'worker' => 'HardWorker', 'queue' => 'default', 'errors' => 'false', 'retry' => 'false', 'my' => 'tag'
+      expect(last_point.tags).to include(
+        'type' => 'job',
+        'worker' => 'HardWorker',
+        'queue' => 'default',
+        'errors' => 'false',
+        'retry' => 'false',
+        'my' => 'tag',
+      )
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/, 'queue_ms' => /^\d+\.\d+$/
     end
   end
