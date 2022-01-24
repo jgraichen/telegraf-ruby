@@ -71,7 +71,7 @@ RSpec.describe Telegraf::Rack do
   end
 
   context 'with write error' do
-    before { expect(agent).to receive(:write).and_raise('write failed') }
+    before { allow(agent).to receive(:write).and_raise('write failed') }
 
     let(:io) { ::StringIO.new }
 
