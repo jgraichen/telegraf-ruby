@@ -18,6 +18,12 @@ appraise 'rails-6.1' do
   end
 end
 
+appraise 'rails-7.0' do
+  group :test do
+    gem 'rails', '~> 7.0.0'
+  end
+end
+
 appraise 'rack-2.0' do
   group :test do
     gem 'rack', '~> 2.0.0'
