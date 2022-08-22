@@ -24,7 +24,7 @@ module Telegraf
       tags = tags.merge(@tags) unless @tags.empty?
 
       if values
-        data = [{series: series || data.to_s, tags: tags, values: values}]
+        data = [{series: series || data.to_s, tags: tags, values: values.dup}]
       end
 
       socket = connect @uri
