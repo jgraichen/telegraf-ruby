@@ -12,7 +12,7 @@ gem 'rspec', '~> 3.8'
 group :test do
   gem 'rack'
   gem 'rails'
-  gem 'sidekiq', '~> 6.0'
+  gem 'sidekiq', '~> 7.0'
 end
 
 group :development do
