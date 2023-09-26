@@ -116,7 +116,7 @@ module Telegraf
     end
 
     def skip_agent?(env)
-      @exclude_paths.include?(env['PATH_INFO']
+      @exclude_paths.include?(env['PATH_INFO'])
     end
   end
 end
