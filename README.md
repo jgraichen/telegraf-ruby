@@ -62,7 +62,7 @@ This gem include a Rails plugin and middlewares / adapters for Rack, ActiveJob a
 require "telegraf/rack"
 
 agent = ::Telegraf::Agent.new
-use ::Telegraf::Rack.new(series: 'rack', agent: agent, tags: {global: 'tag'})
+use ::Telegraf::Rack.new(series: 'rack', agent: agent, tags: {global: 'tag'}, exclude_paths: ['/health', '/metrics']
 ```
 
 See middleware [class documentation](lib/telegraf/rack.rb) for more details.
