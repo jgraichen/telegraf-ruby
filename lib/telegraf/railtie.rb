@@ -53,6 +53,7 @@ module Telegraf
     config.telegraf.rack = ::ActiveSupport::OrderedOptions.new
     config.telegraf.rack.enabled = true
     config.telegraf.rack.series = 'requests'
+    config.telegraf.rack.exclude_paths = []
     config.telegraf.rack.tags = {}
 
     # Install request instrumentation
@@ -89,6 +90,7 @@ module Telegraf
         agent: app.config.telegraf.agent,
         series: app.config.telegraf.rack.series,
         tags: app.config.telegraf.rack.tags,
+        exclude_paths: app.config.telegraf.rack.exclude_paths,
         logger: Rails.logger
     end
 

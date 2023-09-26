@@ -90,6 +90,7 @@ class MyApplication > ::Rails::Application
   # By default the Rack middleware to collect events is installed
   config.telegraf.rack.enabled = true
   config.telegraf.rack.series = "requests"
+  config.telegraf.rack.exclude_paths = []
   config.telegraf.rack.tags = {}
 
   # These are the default settings when ActiveJob is detected
@@ -107,6 +108,9 @@ class MyApplication > ::Rails::Application
   config.telegraf.instrumentation = true
 end
 ```
+
+To exclude to exclude certain paths use `config.telegraf.rack.exclude_paths` where the array of values like `['/health', '/metrics']` will be matched against `request.path`. The default is `[]`.
+
 
 Received event example:
 

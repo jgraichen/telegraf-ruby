@@ -52,9 +52,10 @@ module Telegraf
     Point = Struct.new(:tags, :values)
     # rubocop:enable Lint/StructNewOverride
 
-    def initialize(app, agent:, series: 'rack', tags: {}, logger: nil)
+    def initialize(app, agent:, series: 'rack', tags: {}, exclude_paths:, logger: nil)
       @app = app
       @tags = tags.freeze
+      @exclude_paths = exclude_paths.freeze
       @agent = agent
       @series = series.to_s.freeze
       @logger = logger
@@ -97,7 +98,8 @@ module Telegraf
     def finish(env, point, rack_start)
       point.values[:request_ms] = \
         (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
-      @agent.write(@series, tags: point.tags, values: point.values) unless skip_agent?(point)
+
+      @agent.write(@series, tags: point.tags, values: point.values) unless skip_agent?(env)
     rescue StandardError => e
       (@logger || env[::Rack::RACK_LOGGER])&.error(e)
     end
@@ -113,9 +115,8 @@ module Telegraf
       false
     end
 
-    def skip_agent?(point)
-      env_skip = ENV['TELEGRAF_RACK_SKIP']
-      env_skip && point.tags[:controller] == env_skip
+    def skip_agent?(env)
+      @exclude_paths.include?(env['PATH_INFO']
     end
   end
 end
