@@ -51,7 +51,7 @@ module Telegraf
     # rubocop:disable Lint/StructNewOverride
     Point = Struct.new(:tags, :values)
     # rubocop:enable Lint/StructNewOverride
-
+    # rubocop:disable Metrics/ParameterLists
     def initialize(app, agent:, series: 'rack', tags: {}, exclude_paths: [], logger: nil)
       @app = app
       @tags = tags.freeze
@@ -60,6 +60,7 @@ module Telegraf
       @series = series.to_s.freeze
       @logger = logger
     end
+    # rubocop:enable Metrics/ParameterLists
 
     def call(env)
       if (request_start = extract_request_start(env))
