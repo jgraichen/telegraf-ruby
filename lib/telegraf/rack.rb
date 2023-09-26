@@ -52,7 +52,7 @@ module Telegraf
     Point = Struct.new(:tags, :values)
     # rubocop:enable Lint/StructNewOverride
 
-    def initialize(app, agent:, series: 'rack', tags: {}, exclude_paths:, logger: nil)
+    def initialize(app, agent:, series: 'rack', tags: {}, exclude_paths: [], logger: nil)
       @app = app
       @tags = tags.freeze
       @exclude_paths = exclude_paths.freeze
