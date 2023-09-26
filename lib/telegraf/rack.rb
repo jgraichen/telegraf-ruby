@@ -97,8 +97,7 @@ module Telegraf
     def finish(env, point, rack_start)
       point.values[:request_ms] = \
         (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
-
-      @agent.write(@series, tags: point.tags, values: point.values)
+      @agent.write(@series, tags: point.tags, values: point.values) unless skip_agent?(point)
     rescue StandardError => e
       (@logger || env[::Rack::RACK_LOGGER])&.error(e)
     end
@@ -112,6 +111,11 @@ module Telegraf
     rescue FloatDomainError
       # Ignore obscure floats in Time.at (e.g. infinity)
       false
+    end
+
+    def skip_agent?(point)
+      env_skip = ENV['TELEGRAF_RACK_SKIP']
+      env_skip && point.tags[:controller] == env_skip
     end
   end
 end
