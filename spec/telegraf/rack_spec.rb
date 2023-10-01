@@ -20,7 +20,7 @@ RSpec.describe Telegraf::Rack do
   context 'with successful request' do
     it 'status=200 app_ms,send_ms,request_ms' do
       mock.request
-      expect(socket_read).to match(/\Arack,status=200 app_ms=\d+\.\d+,send_ms=\d+\.\d+,request_ms=\d+\.\d+\z/)
+      expect(socket_read).to match(/\Arack,status=200 app_ms=\d+\.\d+,request_ms=\d+\.\d+,send_ms=\d+\.\d+\z/)
     end
   end
 

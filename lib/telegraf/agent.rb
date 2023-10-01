@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'telegraf/serializer'
+
 module Telegraf
   class Agent
     DEFAULT_CONNECTION = 'udp://localhost:8094'
@@ -10,6 +12,7 @@ module Telegraf
       @uri = URI.parse(uri || DEFAULT_CONNECTION)
       @tags = tags
       @logger = logger
+      @serializer = Serializer.new
     end
 
     def write(*args, **kwargs)
@@ -28,18 +31,12 @@ module Telegraf
       end
 
       socket = connect @uri
-      socket.write dump data
+      socket.write(@serializer.dump_all(data))
     ensure
       socket&.close
     end
 
     private
-
-    def dump(data)
-      data.each.map do |point|
-        ::InfluxDB::PointValue.new(point).dump
-      end.join("\n")
-    end
 
     def connect(uri)
       case uri.scheme.downcase
