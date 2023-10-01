@@ -7,8 +7,6 @@ Send events to a local [Telegraf](https://github.com/influxdata/telegraf) agent 
 
 It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect request events. See plugin usage details below.
 
-This gem only uses the line protocol from the `influxdb` gem and does not depend on any specific version. This may break in the future but does not restrict you in using a your preferred `influxdb` gem version.
-
 ## Installation
 
 ```ruby
@@ -17,20 +15,23 @@ gem 'telegraf'
 
 And then execute:
 
-    $ bundle
+```console
+bundle
+```
 
 Or install it yourself as:
 
-    $ gem install telegraf
+```ruby
+gem install telegraf
+```
 
 ## Usage as a library
 
 Configure telegraf socket listener e.g.:
 
-```
+```toml
 [[inputs.socket_listener]]
   service_address = "udp://localhost:8094"
-
 ```
 
 ```ruby
@@ -48,13 +49,13 @@ telegraf.write([{
 }])
 ```
 
-There is not buffer or batch handling, nor connection pooling or keep alive. Each `#write` creates a new connection (unless it's a datagram connection).
+There is no buffer or batch handling, nor connection pooling or keep alive. Each `#write` creates a new connection (unless it's a datagram connection).
 
 There is no exception handling.
 
 ## Using the Rack and Rails plugins
 
-This gem include a Rails plugin and middlewares / adapters for Rack, ActiveJob and Sidekiq to collect request and background worker events. They need to be explicitly required to be used:
+This gem includes a Rails plugin and middlewares / adapters for Rack, ActiveJob and Sidekiq, to collect request and background worker events. You need to require them explicitly:
 
 ### Rack
 
@@ -110,11 +111,12 @@ end
 
 Received event example:
 
-```
+```text
 requests,action=index,controller=TestController,instance=TestController#index,method=GET,status=200 db_ms=0.0,view_ms=2.6217450003969134,action_ms=2.702335,app_ms=4.603561000294576,send_ms=0.09295000018028077,request_ms=4.699011000411701,queue_ms=0.00003000028323014
 ```
 
 See the various classes' documentation for more details on the collected tags and values:
+
 - [Rack middleware](lib/telegraf/rack.rb)
 - [Rails plugin](lib/telegraf/railtie.rb)
 - [ActiveJob plugin](lib/telegraf/active_job.rb)
@@ -148,7 +150,6 @@ end
 ```
 
 See middleware [class documentation](lib/telegraf/sidekiq.rb) for more details.
-
 
 ## License
 
