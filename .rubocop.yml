@@ -4,7 +4,7 @@ inherit_gem:
   my-rubocop: default.yml
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
   SuggestExtensions: False
 
 RSpec/FilePath:

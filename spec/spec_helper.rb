@@ -3,6 +3,9 @@
 require 'bundler/setup'
 require 'telegraf'
 
+require 'socket'
+require 'tmpdir'
+
 module Support
   module Tmpdir
     extend RSpec::SharedContext
@@ -64,9 +67,9 @@ module Support
     end
 
     def _parse_fields(str)
-      str.split(',').map do |s|
+      str.split(',').to_h do |s|
         s.split('=')
-      end.to_h
+      end
     end
   end
 end
