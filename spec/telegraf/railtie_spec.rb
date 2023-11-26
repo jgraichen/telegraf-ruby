@@ -7,7 +7,7 @@ require 'action_controller'
 
 ENV['RAILS_ENV'] ||= 'production'
 
-class TestController < ::ActionController::Base
+class TestController < ActionController::Base
   def index
     render plain: 'test'
   end
@@ -15,7 +15,7 @@ end
 
 RSpec.describe Telegraf::Railtie do
   subject(:app) do
-    Class.new(::Rails::Application) do
+    Class.new(Rails::Application) do
       config.eager_load = true
       config.secret_key_base = 'secret'
       config.action_dispatch.show_exceptions = false
@@ -48,7 +48,7 @@ RSpec.describe Telegraf::Railtie do
   describe '<config>' do
     describe 'telegraf.connect' do
       it 'defaults to ::Telegraf::Agent::DEFAULT_CONNECTION' do
-        expect(config.telegraf.connect).to eq ::Telegraf::Agent::DEFAULT_CONNECTION
+        expect(config.telegraf.connect).to eq Telegraf::Agent::DEFAULT_CONNECTION
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Telegraf::Railtie do
     describe 'telegraf.rack.enabled' do
       subject { config.telegraf.rack.enabled }
 
-      it { is_expected.to eq true }
+      it { is_expected.to be true }
     end
 
     describe 'telegraf.rack.series' do
@@ -83,7 +83,7 @@ RSpec.describe Telegraf::Railtie do
       config.telegraf.tags = {app: 'name'}
 
       application.config.telegraf.agent.tap do |agent|
-        expect(agent).to be_a ::Telegraf::Agent
+        expect(agent).to be_a Telegraf::Agent
         expect(agent.uri).to eq URI.parse('tcp://localhost:1234')
         expect(agent.tags).to eq({app: 'name'})
       end
@@ -91,7 +91,7 @@ RSpec.describe Telegraf::Railtie do
 
     it 'installs middleware in first place' do
       middleware = application.config.middleware.first
-      expect(middleware.klass).to eq ::Telegraf::Rack
+      expect(middleware.klass).to eq Telegraf::Rack
 
       kwargs = middleware.args.first
       expect(kwargs[:agent]).to eq application.config.telegraf.agent
@@ -103,17 +103,17 @@ RSpec.describe Telegraf::Railtie do
       before { config.telegraf.rack.enabled = false }
 
       it 'does not install middleware' do
-        expect(application.config.middleware.to_a).not_to include ::Telegraf::Rack
+        expect(application.config.middleware.to_a).not_to include Telegraf::Rack
       end
     end
   end
 
   describe '<instrumentation>' do
-    let(:mock) { ::Rack::MockRequest.new(application) }
+    let(:mock) { Rack::MockRequest.new(application) }
     let(:socket) { UDPSocket.new.tap {|s| s.bind('localhost', 8094) } }
 
     it 'assigns extra tags and values' do
-      expect(application.config.middleware).to include ::Telegraf::Rack
+      expect(application.config.middleware).to include Telegraf::Rack
       mock.request
 
       parsed = socket_parse

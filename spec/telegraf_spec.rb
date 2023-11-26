@@ -6,12 +6,12 @@ require 'tmpdir'
 
 RSpec.describe Telegraf do
   it 'has a version number' do
-    expect(Telegraf::VERSION).not_to be nil
+    expect(Telegraf::VERSION).not_to be_nil
   end
 
   context 'with UNIX socket' do
-    let(:agent) { ::Telegraf::Agent.new "unix:#{tmpdir}/sock" }
-    let(:socket) { ::UNIXServer.new "#{tmpdir}/sock" }
+    let(:agent) { Telegraf::Agent.new "unix:#{tmpdir}/sock" }
+    let(:socket) { UNIXServer.new "#{tmpdir}/sock" }
 
     it 'writes multiple points' do
       agent.write(
@@ -31,7 +31,7 @@ RSpec.describe Telegraf do
   end
 
   context 'with UNIXGRAM socket' do
-    let(:agent) { ::Telegraf::Agent.new "unixgram:#{tmpdir}/sock" }
+    let(:agent) { Telegraf::Agent.new "unixgram:#{tmpdir}/sock" }
     let(:socket) do
       Socket.new(:UNIX, :DGRAM).tap do |socket|
         socket.bind Socket.pack_sockaddr_un "#{tmpdir}/sock"
@@ -45,7 +45,7 @@ RSpec.describe Telegraf do
   end
 
   context 'with TCP socket' do
-    let(:agent) { ::Telegraf::Agent.new 'tcp://localhost:8094' }
+    let(:agent) { Telegraf::Agent.new 'tcp://localhost:8094' }
     let(:socket) { TCPServer.new 'localhost', 8094 }
 
     it 'write points' do
@@ -55,7 +55,7 @@ RSpec.describe Telegraf do
   end
 
   context 'with UDP socket' do
-    let(:agent) { ::Telegraf::Agent.new 'udp://localhost:8094' }
+    let(:agent) { Telegraf::Agent.new 'udp://localhost:8094' }
     let(:socket) { UDPSocket.new.tap {|s| s.bind 'localhost', 8094 } }
 
     it 'write points' do
@@ -65,7 +65,7 @@ RSpec.describe Telegraf do
   end
 
   context 'with default' do
-    let(:agent) { ::Telegraf::Agent.new 'udp://localhost:8094' }
+    let(:agent) { Telegraf::Agent.new 'udp://localhost:8094' }
     let(:socket) { UDPSocket.new.tap {|s| s.bind 'localhost', 8094 } }
 
     it 'writes points to UDP on localhost:8094' do

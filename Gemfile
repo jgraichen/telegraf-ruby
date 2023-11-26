@@ -5,9 +5,9 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in telegraf.gemspec
 gemspec
 
-gem 'my-rubocop', github: 'jgraichen/my-rubocop', ref: 'v6'
 gem 'rake'
 gem 'rspec', '~> 3.8'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v11'
 
 group :test do
   gem 'rack'
