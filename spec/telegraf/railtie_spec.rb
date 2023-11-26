@@ -114,7 +114,10 @@ RSpec.describe Telegraf::Railtie do
 
     it 'assigns extra tags and values' do
       expect(application.config.middleware).to include Telegraf::Rack
-      mock.request
+
+      response = mock.request
+      expect(response.status).to eq 200
+      expect(response.body).to eq 'test'
 
       parsed = socket_parse
       expect(parsed.size).to eq 1
