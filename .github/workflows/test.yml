@@ -25,6 +25,8 @@ jobs:
           - rack_2.0.gemfile
           - rack_2.1.gemfile
           - rack_2.2.gemfile
+          - sidekiq_6.gemfile
+          - sidekiq_7.gemfile
         exclude:
           - ruby: "3.2"
             gemfile: rails_5.2.gemfile
@@ -63,7 +65,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: '3.3'
           bundler-cache: true
 
       - run: bundle exec rubocop --parallel --color

@@ -12,7 +12,7 @@ gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v11'
 group :test do
   gem 'rack'
   gem 'rails'
-  gem 'sidekiq', '~> 7.1', '>= 7.1.3'
+  gem 'sidekiq'
 end
 
 group :development do

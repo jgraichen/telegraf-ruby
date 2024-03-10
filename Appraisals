@@ -41,3 +41,15 @@ appraise 'rack-2.2' do
     gem 'rack', '~> 2.2.0'
   end
 end
+
+appraise 'sidekiq-6' do
+  group :test do
+    gem 'sidekiq', '~> 6.0'
+  end
+end
+
+appraise 'sidekiq-7' do
+  group :test do
+    gem 'sidekiq', '~> 7.0'
+  end
+end

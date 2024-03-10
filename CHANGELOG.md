@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - New standalone Influx line protocol serializer
+- `before_send` filter option for agent and all plugins (#27)
 
 ### Changed
 
