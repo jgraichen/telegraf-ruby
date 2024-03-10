@@ -144,7 +144,7 @@ require "telegraf/sidekiq"
 agent = ::Telegraf::Agent.new
 Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
-    chain.add ::Telegraf::Sidekiq::Middleware, agent: agent, series: 'sidekiq', tags: {global: 'tag'}
+    chain.add ::Telegraf::Sidekiq::Middleware, agent, series: 'sidekiq', tags: {global: 'tag'}
   end
 end
 ```
