@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'uri'
 require 'telegraf/serializer'
 
 module Telegraf
@@ -8,11 +9,12 @@ module Telegraf
 
     attr_reader :uri, :logger, :tags
 
-    def initialize(uri = nil, logger: nil, tags: {})
+    def initialize(uri = nil, logger: nil, tags: {}, before_send: nil)
       @uri = URI.parse(uri || DEFAULT_CONNECTION)
       @tags = tags
       @logger = logger
       @serializer = Serializer.new
+      @before_send = before_send
     end
 
     def write(*args, **kwargs)
@@ -28,6 +30,11 @@ module Telegraf
 
       if values
         data = [{series: series || data.to_s, tags: tags, values: values.dup}]
+      end
+
+      if @before_send
+        data = @before_send.call(data)
+        return unless data
       end
 
       socket = connect @uri

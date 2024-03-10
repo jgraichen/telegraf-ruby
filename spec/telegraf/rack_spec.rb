@@ -29,6 +29,7 @@ RSpec.describe Telegraf::Rack do
 
     it 'includes status=404' do
       mock.request
+      expect(last_points.size).to eq 1
       expect(last_point.tags).to eq 'status' => '404'
     end
   end
@@ -38,6 +39,7 @@ RSpec.describe Telegraf::Rack do
 
     it 'status=-1 app_ms,request_ms' do
       mock.request rescue nil
+      expect(last_points.size).to eq 1
       expect(last_point.tags).to eq 'status' => '-1'
       expect(last_point.values.keys).to match_array %w[app_ms request_ms]
     end
@@ -47,6 +49,7 @@ RSpec.describe Telegraf::Rack do
     it 'includes queue_ms value' do
       mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{Time.now.utc.to_f}"})
 
+      expect(last_points.size).to eq 1
       expect(last_point.values.keys).to include 'queue_ms'
       expect(last_point.values['queue_ms']).to match(/\A\d+\.\d+\z/)
     end
@@ -65,6 +68,7 @@ RSpec.describe Telegraf::Rack do
     it 'status=200 app_ms,send_ms,request_ms' do
       mock.request
 
+      expect(last_points.size).to eq 1
       expect(last_point.tags).to include 'my' => 'tag'
       expect(last_point.values).to include 'val' => '100i'
     end
@@ -98,6 +102,29 @@ RSpec.describe Telegraf::Rack do
         expect do
           mock.request('GET', '/', {'rack.logger' => nil})
         end.not_to raise_error
+      end
+    end
+  end
+
+  context 'with before_send filter' do
+    let(:args) { {before_send: before_send} }
+
+    context 'dropping rack paths' do
+      let(:before_send) do
+        lambda {|point, request:, **|
+          return if %r{^/healthcheck}.match?(request.path)
+
+          point.values[:path] = request.path
+          point
+        }
+      end
+
+      it('drops matching points') do
+        mock.request('GET', '/', {})
+        mock.request('GET', '/healthcheck', {})
+
+        expect(last_points.size).to eq 1
+        expect(last_point.values).to include('path' => '"/"')
       end
     end
   end

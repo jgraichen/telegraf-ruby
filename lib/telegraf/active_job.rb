@@ -24,17 +24,16 @@ module Telegraf
   #     Total job processing time.
   #
   class ActiveJob
-    def initialize(agent:, series: 'active_job', tags: {})
-      @agent = agent
-      @series = series.to_s.freeze
-      @tags = tags.freeze
+    include Plugin
+
+    def initialize(series: 'active_job', **kwargs)
+      super(series: series, **kwargs)
     end
 
     def call(_name, start, finish, _id, payload)
       job = payload[:job]
 
-      @agent.write(
-        @series,
+      point = Point.new(
         tags: {
           **@tags,
           job: job.class.name,
@@ -45,6 +44,8 @@ module Telegraf
           app_ms: ((finish - start) * 1000.0), # milliseconds
         },
       )
+
+      _write(point, before_send_kwargs: {payload: payload})
     end
   end
 end

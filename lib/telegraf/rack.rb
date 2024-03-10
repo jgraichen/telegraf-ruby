@@ -41,22 +41,15 @@ module Telegraf
   #     contain a floating point timestamp in seconds.
   #
   class Rack
+    include ::Telegraf::Plugin
+
     FIELD_NAME = 'telegraf.rack.point'
     HEADER_REGEX = /t=(\d+(\.\d+)?)/.freeze
 
-    # Warning: `:values` member overrides `Struct#values` and it may be
-    # unexpected, but nothing we can change here as this is an import public API
-    # right now.
-    #
-    # rubocop:disable Lint/StructNewOverride
-    Point = Struct.new(:tags, :values)
-    # rubocop:enable Lint/StructNewOverride
+    def initialize(app, agent:, series: 'rack', tags: {}, logger: nil, before_send: nil) # rubocop:disable Metrics/ParameterLists
+      super(agent: agent, series: series, tags: tags, before_send: before_send)
 
-    def initialize(app, agent:, series: 'rack', tags: {}, logger: nil)
       @app = app
-      @tags = tags.freeze
-      @agent = agent
-      @series = series.to_s.freeze
       @logger = logger
     end
 
@@ -66,7 +59,7 @@ module Telegraf
       end
 
       rack_start = ::Rack::Utils.clock_time
-      point = env[FIELD_NAME] = Point.new(@tags.dup, {})
+      point = env[FIELD_NAME] = Point.new(tags: @tags.dup)
       point.values[:queue_ms] = queue_ms if queue_ms
 
       begin
@@ -98,7 +91,7 @@ module Telegraf
       point.values[:request_ms] = \
         (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
 
-      @agent.write(@series, tags: point.tags, values: point.values)
+      _write(point, before_send_kwargs: {request: ::Rack::Request.new(env)})
     rescue StandardError => e
       (@logger || env[::Rack::RACK_LOGGER])&.error(e)
     end
