@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-03-11
+
 ### Added
 
 - New standalone Influx line protocol serializer
@@ -70,7 +72,8 @@ All notable changes to this project will be documented in this file.
 
 - Remove `influxdb` not unnecessarily restrict users needing a specific influxdb client.
 
-[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/jgraichen/telegraf-ruby/compare/v2.1.1...v3.0.0
 [2.1.1]: https://github.com/jgraichen/telegraf-ruby/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/jgraichen/telegraf-ruby/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/jgraichen/telegraf-ruby/compare/v1.0.0...v2.0.0
