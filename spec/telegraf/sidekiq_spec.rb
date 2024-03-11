@@ -148,7 +148,7 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
         }
       end
 
-      it('drops matching points') do
+      it 'drops matching points' do
         work!
         expect(last_points.size).to eq 0
       end

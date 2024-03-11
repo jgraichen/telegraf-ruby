@@ -31,7 +31,7 @@ RSpec.describe Telegraf::Agent do
       }
     end
 
-    it 'drops all points' do
+    it 'drops all points when all points match' do
       agent.write!('series', tags: {drop: 1}, values: {a: 1})
       expect { socket_read }.to raise_error(EOFError)
     end

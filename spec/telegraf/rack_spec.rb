@@ -119,7 +119,7 @@ RSpec.describe Telegraf::Rack do
         }
       end
 
-      it('drops matching points') do
+      it 'drops matching points' do
         mock.request('GET', '/', {})
         mock.request('GET', '/healthcheck', {})
 
