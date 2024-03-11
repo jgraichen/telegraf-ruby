@@ -135,4 +135,23 @@ RSpec.describe Telegraf::Sidekiq::Middleware do
       expect(last_point.values).to match 'app_ms' => /^\d+\.\d+$/, 'queue_ms' => /^\d+\.\d+$/
     end
   end
+
+  context 'with before_send filter' do
+    let(:args) { {before_send: before_send} }
+
+    context 'excluding specific worker' do
+      let(:before_send) do
+        lambda {|point, worker:, **|
+          return if worker.instance_of?(HardWorker)
+
+          point
+        }
+      end
+
+      it 'drops matching points' do
+        work!
+        expect(last_points.size).to eq 0
+      end
+    end
+  end
 end

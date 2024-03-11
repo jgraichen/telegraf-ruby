@@ -49,17 +49,26 @@ module Support
     end
 
     def socket_parse
-      socket_read.lines.map {|line| _parse(line) }
+      [].tap do |data|
+        loop do
+          socket_read.lines.each {|line| data << _parse(line) }
+        rescue IO::EAGAINWaitReadable
+          break
+        end
+      end
     end
 
     private
 
-    REGEXP = /^(\w+),(.*) (.*)( \d+)?$/.freeze
+    REGEXP = /^(?<series>\w+)(?:,(?<tags>.*))? (?<values>.*)(?<ts> \d+)?$/.freeze
 
     def _parse(line)
       if (m = REGEXP.match(line))
         return Point.new(
-          m[1], _parse_fields(m[2]), _parse_fields(m[3]), m[4]&.strip&.to_i,
+          m['series'],
+          _parse_fields(m['tags']),
+          _parse_fields(m['values']),
+          m['ts']&.strip&.to_i,
         )
       end
 
@@ -67,6 +76,8 @@ module Support
     end
 
     def _parse_fields(str)
+      return {} unless str
+
       str.split(',').to_h do |s|
         s.split('=')
       end

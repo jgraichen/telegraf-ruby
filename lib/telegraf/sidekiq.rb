@@ -37,51 +37,55 @@ module Telegraf
     #     Only present for "normal" (async) jobs (with tag `type` of "job").
     #
     class Middleware
+      include ::Telegraf::Plugin
+
       def initialize(agent, options = {})
-        @agent = agent
-        @series = options.fetch(:series, 'sidekiq').to_str.freeze
-        @tags = options.fetch(:tags, {}).to_hash.freeze
+        options[:series] ||= 'sidekiq'
+
+        super(
+          **options,
+          agent: agent
+        )
       end
 
       def call(worker, job, queue)
         job_start = ::Time.now.utc
 
-        tags = {
-          **@tags,
-          type: 'job',
-          errors: true,
-          retry: job.key?('retried_at'),
-          queue: queue,
-          worker: worker.class.name,
-        }
-
-        values = {
-          retry_count: job['retry_count'],
-        }.compact
+        point = Point.new(
+          tags: {
+            **@tags,
+            type: 'job',
+            errors: true,
+            retry: job.key?('retried_at'),
+            queue: queue,
+            worker: worker.class.name,
+          },
+          values: {
+            retry_count: job['retry_count'],
+          }.compact,
+        )
 
         # The "enqueued_at" key is not present for scheduled jobs.
         # See https://github.com/mperham/sidekiq/wiki/Job-Format.
         if job.key?('enqueued_at')
           enqueued_at = ::Time.at(job['enqueued_at'].to_f).utc
-          values[:queue_ms] = (job_start - enqueued_at) * 1000 # milliseconds
+          point.values[:queue_ms] = (job_start - enqueued_at) * 1000 # milliseconds
         end
 
         # The "at" key is only present for scheduled jobs.
-        tags[:type] = 'scheduled_job' if job.key?('at')
+        point.tags[:type] = 'scheduled_job' if job.key?('at')
 
         begin
           yield
 
           # If we get here, this was a successful execution
-          tags[:errors] = false
+          point.tags[:errors] = false
         ensure
           job_stop = ::Time.now.utc
 
-          values[:app_ms] = (job_stop - job_start) * 1000 # milliseconds
+          point.values[:app_ms] = (job_stop - job_start) * 1000 # milliseconds
 
-          @agent.write(
-            @series, tags: tags, values: values,
-          )
+          _write(point, before_send_kwargs: {worker: worker, job: job, queue: queue})
         end
       end
     end

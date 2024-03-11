@@ -8,8 +8,8 @@ gem "rubocop-config", github: "jgraichen/rubocop-config", ref: "v11"
 
 group :test do
   gem "rack"
-  gem "rails", "~> 5.2.0"
-  gem "sidekiq"
+  gem "rails"
+  gem "sidekiq", "~> 6.0"
 end
 
 group :development do

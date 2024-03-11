@@ -48,12 +48,14 @@ module Telegraf
     # Connect URI or tuple
     config.telegraf.connect = ::Telegraf::Agent::DEFAULT_CONNECTION
     config.telegraf.tags = {}
+    config.telegraf.before_send = nil
 
     # Install Rack middlewares
     config.telegraf.rack = ::ActiveSupport::OrderedOptions.new
     config.telegraf.rack.enabled = true
     config.telegraf.rack.series = 'requests'
     config.telegraf.rack.tags = {}
+    config.telegraf.rack.before_send = nil
 
     # Install request instrumentation
     config.telegraf.instrumentation = true
@@ -67,29 +69,37 @@ module Telegraf
     config.telegraf.active_job.enabled = defined?(::ActiveJob)
     config.telegraf.active_job.series = 'active_job'
     config.telegraf.active_job.tags = {}
+    config.telegraf.active_job.before_send = nil
 
     # Install Sidekiq middleware
     config.telegraf.sidekiq = ::ActiveSupport::OrderedOptions.new
     config.telegraf.sidekiq.enabled = defined?(::Sidekiq)
     config.telegraf.sidekiq.series = 'sidekiq'
     config.telegraf.sidekiq.tags = {}
+    config.telegraf.sidekiq.before_send = nil
 
     initializer 'telegraf.agent' do |app|
       app.config.telegraf.agent ||= \
-        ::Telegraf::Agent.new \
+        ::Telegraf::Agent.new(
           app.config.telegraf.connect,
+          before_send: app.config.telegraf.before_send,
           logger: Rails.logger,
-          tags: app.config.telegraf.tags
+          tags: app.config.telegraf.tags,
+        )
     end
 
     initializer 'telegraf.rack' do |app|
       next unless app.config.telegraf.rack.enabled
 
-      app.config.middleware.insert 0, Telegraf::Rack, \
+      app.config.middleware.insert(
+        0,
+        Telegraf::Rack,
         agent: app.config.telegraf.agent,
+        before_send: app.config.telegraf.rack.before_send,
+        logger: Rails.logger,
         series: app.config.telegraf.rack.series,
         tags: app.config.telegraf.rack.tags,
-        logger: Rails.logger
+      )
     end
 
     initializer 'telegraf.instrumentation' do |app|
@@ -128,6 +138,7 @@ module Telegraf
         'perform.active_job',
         Telegraf::ActiveJob.new(
           agent: app.config.telegraf.agent,
+          before_send: app.config.telegraf.active_job.before_send,
           series: app.config.telegraf.active_job.series,
           tags: app.config.telegraf.active_job.tags,
         ),
@@ -142,6 +153,7 @@ module Telegraf
           chain.add Telegraf::Sidekiq::Middleware, \
             app.config.telegraf.agent,
             {
+              before_send: app.config.telegraf.sidekiq.before_send,
               series: app.config.telegraf.sidekiq.series,
               tags: app.config.telegraf.sidekiq.tags,
             }
