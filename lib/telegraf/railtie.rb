@@ -79,7 +79,7 @@ module Telegraf
     config.telegraf.sidekiq.before_send = nil
 
     initializer 'telegraf.agent' do |app|
-      app.config.telegraf.agent ||= \
+      app.config.telegraf.agent ||=
         ::Telegraf::Agent.new(
           app.config.telegraf.connect,
           before_send: app.config.telegraf.before_send,
@@ -150,7 +150,7 @@ module Telegraf
 
       ::Sidekiq.configure_server do |config|
         config.server_middleware do |chain|
-          chain.add Telegraf::Sidekiq::Middleware, \
+          chain.add Telegraf::Sidekiq::Middleware,
             app.config.telegraf.agent,
             {
               before_send: app.config.telegraf.sidekiq.before_send,

@@ -27,7 +27,7 @@ module Telegraf
     include Plugin
 
     def initialize(series: 'active_job', **kwargs)
-      super(series: series, **kwargs)
+      super
     end
 
     def call(_name, start, finish, _id, payload)

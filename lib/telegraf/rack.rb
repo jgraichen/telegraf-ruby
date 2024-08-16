@@ -67,13 +67,13 @@ module Telegraf
           status, headers, body = @app.call(env)
         ensure
           point.tags[:status] ||= status || -1
-          point.values[:app_ms] = \
+          point.values[:app_ms] =
             (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
         end
 
         send_start = ::Rack::Utils.clock_time
         proxy = ::Rack::BodyProxy.new(body) do
-          point.values[:send_ms] = \
+          point.values[:send_ms] =
             (::Rack::Utils.clock_time - send_start) * 1000 # milliseconds
 
           finish(env, point, rack_start)
@@ -88,7 +88,7 @@ module Telegraf
     private
 
     def finish(env, point, rack_start)
-      point.values[:request_ms] = \
+      point.values[:request_ms] =
         (::Rack::Utils.clock_time - rack_start) * 1000 # milliseconds
 
       _write(point, before_send_kwargs: {request: ::Rack::Request.new(env)})
