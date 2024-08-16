@@ -27,6 +27,16 @@ It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect re
         </picture>
       </a>
     </td>
+  </tr>
+  </tr>
+    <td>
+      <a href="./examples/queue-time-light.png">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./examples/queue-time-dark.png">
+          <img alt="Screenshot of a Grafana dashboard showing detailed queue time metrics including percentiles and median for multiple applications" src="./examples/queue-time-light.png">
+        </picture>
+      </a>
+    </td>
     <td>
       <a href="./examples/jobs-light.png">
         <picture>
