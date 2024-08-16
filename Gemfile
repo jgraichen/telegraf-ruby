@@ -7,7 +7,7 @@ gemspec
 
 gem 'rake'
 gem 'rspec', '~> 3.8'
-gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v11'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: 'v12'
 
 group :test do
   gem 'rack'

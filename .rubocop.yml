@@ -7,5 +7,5 @@ AllCops:
   TargetRubyVersion: "2.7"
   SuggestExtensions: False
 
-RSpec/FilePath:
+RSpec/SpecFilePathFormat:
   Enabled: False
