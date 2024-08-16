@@ -7,6 +7,37 @@ Send events to a local [Telegraf](https://github.com/influxdata/telegraf) agent 
 
 It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect request events. See plugin usage details below.
 
+## Examples
+
+<table cellpadding="0">
+  <tr>
+    <td>
+      <a href="./examples/app-perf-light.png">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./examples/app-perf-dark.png">
+          <img alt="Screenshot of a Grafana dashboard showing overview metrics about the application controllers performance such as slow actions, controller runtime breakdown, total time consumption" src="./examples/app-perf-light.png">
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a href="./examples/controller-dark.png">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./examples/controller-dark.png">
+          <img alt="Screenshot of a Grafana dashboard showing detailed metrics about an individual controller actions including a flamegraph for request performance" src="./examples/controller-light.png">
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a href="./examples/jobs-light.png">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="./examples/jobs-dark.png">
+          <img alt="Screenshot of a Grafana dashboard showing metrics about sidekiq background jobs such as runtime and errors" src="./examples/jobs-light.png">
+        </picture>
+      </a>
+    </td>
+  </tr>
+</table>
+
 ## Installation
 
 ```ruby
