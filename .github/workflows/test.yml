@@ -13,19 +13,33 @@ jobs:
     strategy:
       matrix:
         ruby:
+          - "3.4"
           - "3.3"
           - "3.2"
           - "3.1"
         gemfile:
-          - rails_6.1.gemfile
-          - rails_7.0.gemfile
-          - rails_7.1.gemfile
+          - rails_8.0.gemfile
           - rails_7.2.gemfile
-          - rack_2.0.gemfile
-          - rack_2.1.gemfile
+          - rails_7.1.gemfile
+          - rails_7.0.gemfile
+          - rails_6.1.gemfile
+          - rack_3.gemfile
           - rack_2.2.gemfile
+          - rack_2.1.gemfile
+          - rack_2.0.gemfile
           - sidekiq_6.gemfile
           - sidekiq_7.gemfile
+        exclude:
+          - ruby: "3.4"
+            gemfile: rails_7.0.gemfile
+          - ruby: "3.4"
+            gemfile: rails_6.1.gemfile
+          - ruby: "3.4"
+            gemfile: rack_2.1.gemfile
+          - ruby: "3.4"
+            gemfile: rack_2.0.gemfile
+          - ruby: "3.1"
+            gemfile: rails_8.0.gemfile
       fail-fast: false
 
     env:
@@ -57,7 +71,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '3.4'
           bundler-cache: true
 
       - run: bundle exec rubocop --parallel --color

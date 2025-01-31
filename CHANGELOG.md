@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Support for Ruby 3.4, Rails 8.0, Rack 3
+
 ## [3.0.0] - 2024-03-11
 
 ### Added

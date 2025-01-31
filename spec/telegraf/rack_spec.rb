@@ -6,6 +6,8 @@ require 'rack/mock'
 require 'telegraf/rack'
 require 'tmpdir'
 
+require 'logger'
+
 RSpec.describe Telegraf::Rack do
   subject(:mock) do
     Rack::MockRequest.new(described_class.new(app, agent: agent, **args))
