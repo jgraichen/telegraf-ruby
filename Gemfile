@@ -9,7 +9,7 @@ gem 'rake'
 gem 'rspec', '~> 3.8'
 gem 'rspec-github', require: false
 
-gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: '64e4c81870e869a3bdd9ea3c49fd042b321dbfbd'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', ref: '9f3e5cd0e519811a7f615f265fca81a4f4e843b9'
 
 group :test do
   gem 'rack'
