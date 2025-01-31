@@ -5,6 +5,7 @@ require 'spec_helper'
 require 'telegraf/active_job'
 require 'tmpdir'
 
+require 'logger'
 require 'active_job'
 
 class HardJob < ActiveJob::Base
