@@ -6,6 +6,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
+gem 'rake-release', '~> 1.2'
+
 gem 'rspec', '~> 3.8'
 gem 'rspec-github', require: false
 
@@ -19,5 +21,4 @@ end
 
 group :development do
   gem 'appraisal'
-  gem 'rake-release', '~> 1.2'
 end
