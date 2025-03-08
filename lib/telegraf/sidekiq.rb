@@ -68,7 +68,14 @@ module Telegraf
         # The "enqueued_at" key is not present for scheduled jobs.
         # See https://github.com/mperham/sidekiq/wiki/Job-Format.
         if job.key?('enqueued_at')
-          enqueued_at = ::Time.at(job['enqueued_at'].to_f).utc
+          enqueued_at = Time.at(
+            if defined?(::Sidekiq::MAJOR) && ::Sidekiq::MAJOR >= 8
+              job['enqueued_at'].to_f / 1000
+            else
+              job['enqueued_at'].to_f
+            end,
+          ).utc
+
           point.values[:queue_ms] = (job_start - enqueued_at) * 1000 # milliseconds
         end
 

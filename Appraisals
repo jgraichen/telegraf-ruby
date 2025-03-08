@@ -65,3 +65,9 @@ appraise 'sidekiq-7' do
     gem 'sidekiq', '~> 7.0'
   end
 end
+
+appraise 'sidekiq-8' do
+  group :test do
+    gem 'sidekiq', '~> 8.0'
+  end
+end
