@@ -30,6 +30,7 @@ jobs:
           - rack_2.0.gemfile
           - sidekiq_6.gemfile
           - sidekiq_7.gemfile
+          - sidekiq_8.gemfile
         exclude:
           - ruby: "3.4"
             gemfile: rails_7.0.gemfile
@@ -41,6 +42,8 @@ jobs:
             gemfile: rack_2.0.gemfile
           - ruby: "3.1"
             gemfile: rails_8.0.gemfile
+          - ruby: "3.1"
+            gemfile: sidekiq_8.gemfile
       fail-fast: false
 
     env:
