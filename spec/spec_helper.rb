@@ -58,9 +58,9 @@ module Support
       end
     end
 
-    private
-
     REGEXP = /^(?<series>\w+)(?:,(?<tags>.*))? (?<values>.*)(?<ts> \d+)?$/.freeze
+
+    private
 
     def _parse(line)
       if (m = REGEXP.match(line))
