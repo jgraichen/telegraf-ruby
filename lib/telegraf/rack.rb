@@ -38,7 +38,8 @@ module Telegraf
   # * `queue_ms`:
   #     Queue time calculated from a `X-Request-Start` header if present. The
   #     header is expected to be formatted like this `t=<timestamp>` and
-  #     contain a floating point timestamp in seconds.
+  #     contain either a floating point timestamp in seconds, or an integer
+  #     timestamp in milliseconds or microseconds or nanoseconds.
   #
   class Rack
     include ::Telegraf::Plugin
@@ -100,7 +101,10 @@ module Telegraf
       return unless env.key?('HTTP_X_REQUEST_START')
 
       if (m = HEADER_REGEX.match(env['HTTP_X_REQUEST_START']))
-        ::Time.at(m[1].to_f).utc
+        # TODO: This code works because the current timestamp in seconds
+        # has 11 characters, and will break on 2286-11-20 17:46:40.
+        value = m[2].nil? ? "#{m[1][0, 10]}.#{m[1][10, 13]}" : m[1]
+        ::Time.at(value.to_f).utc
       end
     rescue FloatDomainError
       # Ignore obscure floats in Time.at (e.g. infinity)
