@@ -47,9 +47,19 @@ RSpec.describe Telegraf::Rack do
     end
   end
 
-  context 'with X-Request-Start' do
+  context 'with X-Request-Start floating point timestamp in seconds' do
     it 'includes queue_ms value' do
       mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{Time.now.utc.to_f}"})
+
+      expect(last_points.size).to eq 1
+      expect(last_point.values.keys).to include 'queue_ms'
+      expect(last_point.values['queue_ms']).to match(/\A\d+\.\d+\z/)
+    end
+  end
+
+  context 'with X-Request-Start integer timestamp in microseconds' do
+    it 'includes queue_ms value' do
+      mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{Time.now.utc.to_f.to_s.delete('.')}"})
 
       expect(last_points.size).to eq 1
       expect(last_point.values.keys).to include 'queue_ms'
