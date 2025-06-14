@@ -2,6 +2,9 @@
 
 require 'rack'
 
+require 'bigdecimal'
+require 'bigdecimal/util'
+
 module Telegraf
   # Telegraf::Rack
   #
@@ -104,7 +107,7 @@ module Telegraf
         # TODO: This code works because the current timestamp in seconds
         # has 11 characters, and will break on 2286-11-20 17:46:40.
         value = m[2].nil? ? "#{m[1][0, 10]}.#{m[1][10, 13]}" : m[1]
-        ::Time.at(value.to_f).utc
+        ::Time.at(value.to_d).utc
       end
     rescue FloatDomainError
       # Ignore obscure floats in Time.at (e.g. infinity)
