@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [3.3.0] - 2025-06-14
+
 ### Added
 
 - Support for integer timestamps in X-Request-Start by @leshik (#37)
@@ -88,7 +90,8 @@ All notable changes to this project will be documented in this file.
 
 - Remove `influxdb` not unnecessarily restrict users needing a specific influxdb client.
 
-[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/jgraichen/telegraf-ruby/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/jgraichen/telegraf-ruby/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/jgraichen/telegraf-ruby/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/jgraichen/telegraf-ruby/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/jgraichen/telegraf-ruby/compare/v2.1.1...v3.0.0
