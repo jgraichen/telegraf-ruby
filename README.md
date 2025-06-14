@@ -51,7 +51,7 @@ It further includes plugins for Rack, Rails, ActiveJob and Sidekiq to collect re
 ## Installation
 
 ```ruby
-gem 'telegraf'
+gem 'telegraf', '~> 3.3'
 ```
 
 And then execute:
@@ -194,7 +194,7 @@ See middleware [class documentation](lib/telegraf/sidekiq.rb) for more details.
 
 ## License
 
-Copyright (C) 2017-2024 Jan Graichen
+Copyright (C) 2017-2025 Jan Graichen
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
