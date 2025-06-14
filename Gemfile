@@ -17,6 +17,7 @@ group :test do
   gem 'rack'
   gem 'rails'
   gem 'sidekiq'
+  gem 'timecop'
 end
 
 group :development do

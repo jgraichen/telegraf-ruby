@@ -47,23 +47,53 @@ RSpec.describe Telegraf::Rack do
     end
   end
 
-  context 'with X-Request-Start floating point timestamp in seconds' do
-    it 'includes queue_ms value' do
-      mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{Time.now.utc.to_f}"})
-
-      expect(last_points.size).to eq 1
-      expect(last_point.values.keys).to include 'queue_ms'
-      expect(last_point.values['queue_ms']).to match(/\A\d+\.\d+\z/)
+  context 'with X-Request-Start' do
+    before do
+      mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{timestamp}"})
     end
-  end
 
-  context 'with X-Request-Start integer timestamp in microseconds' do
-    it 'includes queue_ms value' do
-      mock.request('GET', '/', {'HTTP_X_REQUEST_START' => "t=#{Time.now.utc.to_f.to_s.delete('.')}"})
+    around do |example|
+      Timecop.freeze(Time.at(1_234_567_891)) { example.run }
+    end
 
-      expect(last_points.size).to eq 1
-      expect(last_point.values.keys).to include 'queue_ms'
-      expect(last_point.values['queue_ms']).to match(/\A\d+\.\d+\z/)
+    context 'floating point timestamp in seconds' do
+      let(:timestamp) { '1234567890.750' }
+
+      it 'includes queue_ms value' do
+        expect(last_points.size).to eq 1
+        expect(last_point.values.keys).to include 'queue_ms'
+        expect(last_point.values['queue_ms']).to eq '250.0'
+      end
+    end
+
+    context 'integer timestamp in milliseconds' do
+      let(:timestamp) { '1234567890750' }
+
+      it 'includes queue_ms value' do
+        expect(last_points.size).to eq 1
+        expect(last_point.values.keys).to include 'queue_ms'
+        expect(last_point.values['queue_ms']).to eq '250.0'
+      end
+    end
+
+    context 'integer timestamp in microseconds' do
+      let(:timestamp) { '1234567890500251' }
+
+      it 'includes queue_ms value' do
+        expect(last_points.size).to eq 1
+        expect(last_point.values.keys).to include 'queue_ms'
+        expect(last_point.values['queue_ms']).to eq '499.749'
+      end
+    end
+
+    context 'integer timestamp in nanoseconds' do
+      let(:timestamp) { '1234567890500000251' }
+
+      it 'includes queue_ms value' do
+        expect(last_points.size).to eq 1
+        expect(last_point.values.keys).to include 'queue_ms'
+        expect(last_point.values['queue_ms']).to eq '499.999749'
+      end
     end
   end
 

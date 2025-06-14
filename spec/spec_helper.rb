@@ -6,6 +6,8 @@ require 'telegraf'
 require 'socket'
 require 'tmpdir'
 
+require 'timecop'
+
 module Support
   module Tmpdir
     extend RSpec::SharedContext
