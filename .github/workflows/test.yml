@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         ruby:
+          - "4.0"
           - "3.4"
           - "3.3"
           - "3.2"
@@ -32,12 +33,20 @@ jobs:
           - sidekiq_7.gemfile
           - sidekiq_8.gemfile
         exclude:
-          - ruby: "3.4"
+          - ruby: "4.0"
             gemfile: rails_7.0.gemfile
           - ruby: "3.4"
+            gemfile: rails_7.0.gemfile
+          - ruby: "4.0"
             gemfile: rails_6.1.gemfile
           - ruby: "3.4"
+            gemfile: rails_6.1.gemfile
+          - ruby: "4.0"
             gemfile: rack_2.1.gemfile
+          - ruby: "3.4"
+            gemfile: rack_2.1.gemfile
+          - ruby: "4.0"
+            gemfile: rack_2.0.gemfile
           - ruby: "3.4"
             gemfile: rack_2.0.gemfile
           - ruby: "3.1"
@@ -75,7 +84,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '4.0.0'
+          ruby-version: "4.0.0"
           bundler-cache: true
 
       - run: bundle exec rubocop --parallel --color
