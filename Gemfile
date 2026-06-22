@@ -11,7 +11,7 @@ gem 'rake-release', '~> 1.2'
 gem 'rspec', '~> 3.8'
 gem 'rspec-github', require: false
 
-gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v14'
+gem 'rubocop-config', github: 'jgraichen/rubocop-config', tag: 'v15'
 
 group :test do
   gem 'rack'
